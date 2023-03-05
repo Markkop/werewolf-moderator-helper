@@ -1,11 +1,18 @@
+import PlayerSelection from "../components/steps/playerSelection";
+import { RoleSelection } from "../components/steps/roleSelection";
+import { useGameContext } from "../hooks/useGameContext";
+
+const steps = {
+  players: <PlayerSelection />,
+  roles: <RoleSelection />,
+};
+
 export default function Home() {
-  return (
-    <div className="container flex items-center p-4 mx-auto min-h-screen justify-center">
-      <main>
-        <h1 className="font-mono text-xl code">
-          Welcome to <span className="text-purple-700">Nextjs</span>, <span className="text-indigo-700">TailwindCSS</span> and <span className="text-gray-700">TypeScript</span>
-        </h1>
-      </main>
-    </div>
-  )
+  const { step } = useGameContext();
+
+  if (step in steps) {
+    return steps[step];
+  }
+
+  return <div>Something went wrong</div>;
 }
