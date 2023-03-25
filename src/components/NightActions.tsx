@@ -71,7 +71,8 @@ export default function NightActions() {
       <ul>
         {alivePlayers.map((player) => (
           <li key={player.id}>
-            {player.name}{" "}
+            {player.name}
+            {` (${player.role.name})`}
             <button onClick={() => handleAction(player.id)}>Select</button>
           </li>
         ))}

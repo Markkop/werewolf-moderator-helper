@@ -31,7 +31,7 @@ export default function HangingStep() {
       <ul>
         {alivePlayers.map((player) => (
           <li key={player.id}>
-            {player.name}{" "}
+            {player.name} {` (${player.role.name})`}
             <button onClick={() => handleSelectPlayer(player.id)}>
               Select
             </button>
