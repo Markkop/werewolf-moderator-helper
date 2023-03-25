@@ -1,18 +1,37 @@
-import PlayerSelection from "../components/steps/playerSelection";
-import { RoleSelection } from "../components/steps/roleSelection";
-import { useGameContext } from "../hooks/useGameContext";
+import AssignRoles from "../components/AssignRoles";
+import DiscussionAndVoting from "../components/DiscussionAndVoting";
+import HangingStep from "../components/HangingStep";
+import ModeratorAnnouncement from "../components/ModeratorAnnouncement";
+import NightActions from "../components/NightActions";
+import SetupPlayers from "../components/SetupPlayers";
+import SetupRoles from "../components/SetupRoles";
+import { useGameContext } from "../contexts/GameContext";
 
-const steps = {
-  players: <PlayerSelection />,
-  roles: <RoleSelection />,
+const Game: React.FC = () => {
+  const { gameState } = useGameContext();
+
+  const renderGameState = () => {
+    switch (gameState) {
+      case "setupPlayers":
+        return <SetupPlayers />;
+      case "setupRoles":
+        return <SetupRoles />;
+      case "assignRoles":
+        return <AssignRoles />;
+      case "nightActions":
+        return <NightActions />;
+      case "moderatorAnnouncement":
+        return <ModeratorAnnouncement />;
+      case "discussionAndVoting":
+        return <DiscussionAndVoting />;
+      case "hangingStep":
+        return <HangingStep />;
+      default:
+        return <SetupPlayers />;
+    }
+  };
+
+  return <div>{renderGameState()}</div>;
 };
 
-export default function Home() {
-  const { step } = useGameContext();
-
-  if (step in steps) {
-    return steps[step];
-  }
-
-  return <div>Something went wrong</div>;
-}
+export default Game;

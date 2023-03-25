@@ -9,17 +9,18 @@ export type GameContextType = {
   removeRole: (role: Role) => void
 }
 
-export type Player = {
-  name: string
-  role?: Role
-  isAlive: boolean
+export interface Player {
+  id: number;
+  name: string;
+  role: Role;
+  isDead: boolean;
 }
 
-export type Role = {
-  name: string
-  description: string
-  alignment: Alignment
-  points: string
+export interface Role {
+  name: string;
+  description: string;
+  alignment: string;
+  points: string;
 }
 
 export type Alignment = 'Good' | 'Evil'
