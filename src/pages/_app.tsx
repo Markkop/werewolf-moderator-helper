@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { AppProps } from "next/app";
 import "../styles/index.css";
-import { GameProvider } from "../contexts/game";
+import { GameProvider } from "../contexts/GameContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
