@@ -1,13 +1,3 @@
-export type GameContextType = {
-  players: Player[]
-  addPlayer: (playerName: string) => void
-  removePlayer: (playerName: string) => void
-  step: Step
-  goToStep: (step: Step) => void
-  roles: Role[]
-  addRole: (role: Role) => void
-  removeRole: (role: Role) => void
-}
 
 export interface Player {
   id: number;
@@ -16,11 +6,16 @@ export interface Player {
   isDead: boolean;
 }
 
+export type RoleAction = {
+  type: 'heal' | 'investigate' | 'kill';
+  targetId: number;
+};
 export interface Role {
   name: string;
   description: string;
   alignment: string;
   points: string;
+  action?: RoleAction;
 }
 
 export type Alignment = 'Good' | 'Evil'

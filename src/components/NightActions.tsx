@@ -16,15 +16,42 @@ export default function NightActions() {
   };
 
   const handleAction = (targetId: number) => {
-    // Implement role-specific actions here
-    // For example:
-    // if (currentRole.name === 'Doctor') {
-    // healPlayer(targetId);
-    // }
+    if (currentRole.role.name === "Doctor") {
+      currentRole.role.action = { type: "heal", targetId };
+    } else if (currentRole.role.name === "Sheriff") {
+      currentRole.role.action = { type: "investigate", targetId };
+    } else if (currentRole.role.name === "Mafioso") {
+      currentRole.role.action = { type: "kill", targetId };
+    }
+    updatePlayer(currentRole);
     handleNextRole();
   };
 
   const handleFinishNightActions = () => {
+    const actions = players.map((player) => player.role.action);
+    const killAction = actions.find((action) => action?.type === "kill");
+    const healAction = actions.find((action) => action?.type === "heal");
+    if (
+      killAction &&
+      (!healAction ||
+        (healAction && killAction.targetId !== healAction.targetId))
+    ) {
+      const killedPlayer = players.find(
+        (player) => player.id === killAction.targetId
+      );
+      if (killedPlayer) {
+        killedPlayer.isDead = true;
+        updatePlayer(killedPlayer);
+      }
+    }
+
+    players.forEach((player) => {
+      if (player.role.action) {
+        delete player.role.action;
+        updatePlayer(player);
+      }
+    });
+
     setCurrentRoleIndex(0);
     setGameState("moderatorAnnouncement");
   };
