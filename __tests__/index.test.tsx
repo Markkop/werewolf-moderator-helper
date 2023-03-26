@@ -22,19 +22,22 @@ const performNightAction = (targetName: string) => {
   );
 };
 
-test("Mafia kills a player in the first night", async () => {
-  await setupGame(["Mafioso", "Townie", "Sheriff", "Doctor", "Townie"]);
+test("Mafia tries to select another mafia", async () => {
+  await setupGame([
+    "Mafioso", // Player 1
+    "Townie", // Player 2
+    "Sheriff", // Player 3
+    "Doctor", // Player 4
+    "Townie", // Player 5
+  ]);
 
-  // Assume the following role assignments for simplicity:
-  // Player 1: Mafioso
-  // Player 2: Townie
-  // Player 3: Sheriff
-  // Player 4: Doctor
-  // Player 5: Townie
-
-  // Night actions
+  // Mafia choose a target to kill
   performNightAction("Player 2"); // Mafioso kills Player 2
+
+  // Doctor choose a target to heal
   performNightAction("Player 3"); // Doctor heals Player 3
+
+  // Sheriff choose a target to investigate
   performNightAction("Player 4"); // Sheriff investigates Player 5
 
   fireEvent.click(screen.getByText("Finish Night Actions"));
@@ -46,7 +49,21 @@ test("Mafia kills a player in the first night", async () => {
   expect(
     screen.getByText(`Player 2 was killed by Player 1 (Mafioso)`)
   ).toBeInTheDocument();
-  // expect(
-  //   screen.getByText("Sheriff investigated Player 4 and found them to be Evil.")
-  // ).toBeInTheDocument();
+});
+
+test("Mafia can't select other mafia", async () => {
+  await setupGame([
+    "Mafioso", // Player 1
+    "Mafioso", // Player 2
+    "Sheriff", // Player 3
+    "Doctor", // Player 4
+    "Townie", // Player 5
+  ]);
+
+  // Mafia choose a target to kill
+  performNightAction("Player 2"); // Mafioso tries to target Player 2
+
+  expect(
+    screen.getByText(`Night Actions - Player 2 (Mafioso)`)
+  ).toBeInTheDocument();
 });

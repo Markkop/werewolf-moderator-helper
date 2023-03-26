@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useGameContext } from "../contexts/GameContext";
+import { RoleActionType } from "../interfaces";
 
 export default function NightActions() {
   const { players, updatePlayer, setGameState, addItemToCurrentNightSummary } =
@@ -34,28 +35,54 @@ export default function NightActions() {
   };
 
   const handleAction = (targetId: number) => {
-    addItemToCurrentNightSummary(
-      `${currentPlayer.name} (${currentPlayer.role.name}) selected ${
-        players.find((player) => player.id === targetId)?.name
-      }`
-    );
-    if (currentPlayer.role.name === "Doctor") {
-      currentPlayer.role.action = { type: "heal", targetId };
-    } else if (currentPlayer.role.name === "Sheriff") {
-      currentPlayer.role.action = { type: "investigate", targetId };
-    } else if (currentPlayer.role.name === "Mafioso") {
+    const action = getActionForRole(currentPlayer.role.name, targetId);
+
+    if (currentPlayer.role.name === "Mafioso") {
       const mafiosos = alivePlayers.filter(
         (player) => player.role.name === "Mafioso"
       );
+
+      if (mafiosos.find((mafioso) => mafioso.id === targetId)) {
+        console.log("a");
+        return;
+      }
+
       mafiosos.forEach((mafioso) => {
-        mafioso.role.action = { type: "kill", targetId };
+        mafioso.role.action = action;
         updatePlayer(mafioso);
       });
       handleNextPlayer();
+
+      addItemToCurrentNightSummary(
+        `${currentPlayer.name} (${currentPlayer.role.name}) selected ${
+          players.find((player) => player.id === targetId)?.name
+        }`
+      );
       return;
     }
+
+    currentPlayer.role.action = action;
     updatePlayer(currentPlayer);
     handleNextPlayer();
+  };
+
+  const getActionForRole = (
+    roleName: string,
+    targetId: number
+  ): { type: RoleActionType; targetId: number } => {
+    if (roleName === "Doctor") {
+      return { type: "heal", targetId };
+    }
+
+    if (roleName === "Sheriff") {
+      return { type: "investigate", targetId };
+    }
+
+    if (roleName === "Mafioso") {
+      return { type: "kill", targetId };
+    }
+
+    throw new Error(`Unsupported role: ${roleName}`);
   };
 
   const handleFinishNightActions = () => {
@@ -118,6 +145,8 @@ export default function NightActions() {
     );
   }
 
+  // disabled if the current player is mafioso and the target options are mafiosos
+
   return (
     <div>
       <h2>
@@ -126,7 +155,13 @@ export default function NightActions() {
       <ul>
         {alivePlayers.map((player) => (
           <li key={player.id}>
-            <button onClick={() => handleAction(player.id)}>
+            <button
+              onClick={() => handleAction(player.id)}
+              disabled={
+                currentPlayer.role.name === "Mafioso" &&
+                player.role.name === "Mafioso"
+              }
+            >
               {`${player.name} (${player.role.name})`}
             </button>
           </li>

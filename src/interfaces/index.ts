@@ -6,10 +6,13 @@ export interface Player {
   isDead: boolean;
 }
 
+export type RoleActionType = 'heal' | 'investigate' | 'kill';
+
 export type RoleAction = {
-  type: 'heal' | 'investigate' | 'kill';
+  type: RoleActionType
   targetId: number;
 };
+
 export interface Role {
   name: string;
   description: string;

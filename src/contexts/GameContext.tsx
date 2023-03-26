@@ -40,42 +40,28 @@ export const GameProvider: React.FC<Props> = ({
   children,
   customRolesOrder,
 }) => {
-  const [players, setPlayers] = useState<Player[]>([
-    {
-      id: 1,
-      name: "Player 1",
+  const defaultPlayers: Player[] = Array.from(
+    { length: customRolesOrder.length || 5 },
+    (_, i) => ({
+      id: i,
+      name: `Player ${i + 1}`,
       role: { name: "", description: "", alignment: "", points: "" },
       isDead: false,
-    },
-    {
-      id: 2,
-      name: "Player 2",
-      role: { name: "", description: "", alignment: "", points: "" },
-      isDead: false,
-    },
-    {
-      id: 3,
-      name: "Player 3",
-      role: { name: "", description: "", alignment: "", points: "" },
-      isDead: false,
-    },
-    {
-      id: 4,
-      name: "Player 4",
-      role: { name: "", description: "", alignment: "", points: "" },
-      isDead: false,
-    },
-    {
-      id: 5,
-      name: "Player 5",
-      role: { name: "", description: "", alignment: "", points: "" },
-      isDead: false,
-    },
-  ]);
-  const [roles, setRoles] = useState<Role[]>([
-    existingRoles[0],
-    ...existingRoles,
-  ]);
+    })
+  );
+
+  const [players, setPlayers] = useState<Player[]>(defaultPlayers);
+  const defaultRoles = customRolesOrder
+    ? customRolesOrder.map((roleName) => {
+        const role = existingRoles.find((role) => role.name === roleName);
+        if (!role) {
+          throw new Error(`Role ${roleName} not found`);
+        }
+        return role;
+      })
+    : [existingRoles[0], ...existingRoles];
+
+  const [roles, setRoles] = useState<Role[]>(defaultRoles);
   const [gameState, setGameState] = useState("idle");
   const [nightSummaries, setnightSummaries] = useState([]);
   const [currentNightSummary, setCurrentNightSummary] = useState<string[]>([]);
@@ -121,6 +107,7 @@ export const GameProvider: React.FC<Props> = ({
   };
 
   const addItemToCurrentNightSummary = (item: string) => {
+    console.log(item);
     setCurrentNightSummary((prevItems) => [...prevItems, item]);
   };
 
