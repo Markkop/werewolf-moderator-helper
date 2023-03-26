@@ -2,35 +2,81 @@ import React, { useState } from "react";
 import { useGameContext } from "../contexts/GameContext";
 
 export default function NightActions() {
-  const { players, updatePlayer, setGameState } = useGameContext();
-  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+  const { players, updatePlayer, setGameState, addItemToCurrentNightSummary } =
+    useGameContext();
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
   const alivePlayers = players.filter((player) => !player.isDead);
-  const rolesWithActions = alivePlayers.filter(
+  const playersWithNightActions = alivePlayers.filter(
     (player) => player.role.name !== "Townie"
-  );
-  const currentRole = rolesWithActions[currentRoleIndex];
+  ); // mafioso first, then doctor, then sheriff
+  const orderedPlayers = playersWithNightActions.sort((a, b) => {
+    if (a.role.name === "Mafioso") {
+      return -1;
+    } else if (b.role.name === "Mafioso") {
+      return 1;
+    } else if (a.role.name === "Doctor") {
+      return -1;
+    } else if (b.role.name === "Doctor") {
+      return 1;
+    } else if (a.role.name === "Sheriff") {
+      return -1;
+    } else if (b.role.name === "Sheriff") {
+      return 1;
+    }
+    return 0;
+  });
 
-  const handleNextRole = () => {
-    setCurrentRoleIndex(currentRoleIndex + 1);
+  const currentPlayer = orderedPlayers[currentPlayerIndex];
+
+  const handleNextPlayer = () => {
+    setCurrentPlayerIndex(currentPlayerIndex + 1);
   };
 
   const handleAction = (targetId: number) => {
-    if (currentRole.role.name === "Doctor") {
-      currentRole.role.action = { type: "heal", targetId };
-    } else if (currentRole.role.name === "Sheriff") {
-      currentRole.role.action = { type: "investigate", targetId };
-    } else if (currentRole.role.name === "Mafioso") {
-      currentRole.role.action = { type: "kill", targetId };
+    addItemToCurrentNightSummary(
+      `${currentPlayer.name} (${currentPlayer.role.name}) selected ${
+        players.find((player) => player.id === targetId)?.name
+      }`
+    );
+    if (currentPlayer.role.name === "Doctor") {
+      currentPlayer.role.action = { type: "heal", targetId };
+    } else if (currentPlayer.role.name === "Sheriff") {
+      currentPlayer.role.action = { type: "investigate", targetId };
+    } else if (currentPlayer.role.name === "Mafioso") {
+      const mafiosos = alivePlayers.filter(
+        (player) => player.role.name === "Mafioso"
+      );
+      mafiosos.forEach((mafioso) => {
+        mafioso.role.action = { type: "kill", targetId };
+        updatePlayer(mafioso);
+      });
+      handleNextPlayer();
+      return;
     }
-    updatePlayer(currentRole);
-    handleNextRole();
+    updatePlayer(currentPlayer);
+    handleNextPlayer();
   };
 
   const handleFinishNightActions = () => {
     const actions = players.map((player) => player.role.action);
     const killAction = actions.find((action) => action?.type === "kill");
+    const killer = players.find(
+      (player) => player.role.action?.type === "kill"
+    );
     const healAction = actions.find((action) => action?.type === "heal");
+    const healer = players.find(
+      (player) => player.role.action?.type === "heal"
+    );
+
+    if (healAction) {
+      addItemToCurrentNightSummary(
+        `${healer.name} (${healer.role.name}) healed ${
+          players.find((player) => player.id === healAction.targetId)?.name
+        }`
+      );
+    }
+
     if (
       killAction &&
       (!healAction ||
@@ -40,6 +86,14 @@ export default function NightActions() {
         (player) => player.id === killAction.targetId
       );
       if (killedPlayer) {
+        const killedBy = players.find(
+          (player) => player.role.action?.type === "kill"
+        );
+        addItemToCurrentNightSummary(
+          `${killedPlayer.name} was killed by ${
+            killedBy.name
+          } ${`(${killedBy.role.name})`}`
+        );
         killedPlayer.isDead = true;
         updatePlayer(killedPlayer);
       }
@@ -52,11 +106,10 @@ export default function NightActions() {
       }
     });
 
-    setCurrentRoleIndex(0);
     setGameState("moderatorAnnouncement");
   };
 
-  if (!currentRole || currentRoleIndex >= rolesWithActions.length) {
+  if (!currentPlayer || currentPlayerIndex >= alivePlayers.length) {
     return (
       <div>
         <h2>Night Actions</h2>
@@ -67,17 +120,19 @@ export default function NightActions() {
 
   return (
     <div>
-      <h2>Night Actions - {currentRole.role.name}</h2>
+      <h2>
+        {`Night Actions - ${currentPlayer.name} (${currentPlayer.role.name})`}
+      </h2>
       <ul>
         {alivePlayers.map((player) => (
           <li key={player.id}>
-            {player.name}
-            {` (${player.role.name})`}
-            <button onClick={() => handleAction(player.id)}>Select</button>
+            <button onClick={() => handleAction(player.id)}>
+              {`${player.name} (${player.role.name})`}
+            </button>
           </li>
         ))}
       </ul>
-      <button onClick={handleNextRole}>Skip</button>
+      <button onClick={handleNextPlayer}>Skip</button>
     </div>
   );
 }

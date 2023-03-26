@@ -2,32 +2,49 @@ import React, { useEffect } from "react";
 import { useGameContext } from "../contexts/GameContext";
 
 export default function AssignRoles() {
-  const { players, roles, updatePlayer, setGameState } = useGameContext();
+  const {
+    players,
+    roles,
+    updatePlayer,
+    setGameState,
+    customRolesOrder,
+    addItemToCurrentNightSummary,
+  } = useGameContext();
 
-  const shuffle = (array: any[]) => {
+  const shuffle = (array: any[], customRolesOrder: string[]) => {
     let currentIndex = array.length;
     let temporaryValue;
-    let randomIndex;
+    let arrayIndex;
     while (currentIndex !== 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
+      if (customRolesOrder?.length > 0) {
+        const customRole = customRolesOrder.pop();
+        arrayIndex = array.findIndex((role) => role.name === customRole);
+      } else {
+        const randomIndex = Math.floor(Math.random() * currentIndex);
+        arrayIndex = randomIndex;
+      }
+
       currentIndex -= 1;
 
       temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+      array[currentIndex] = array[arrayIndex];
+      array[arrayIndex] = temporaryValue;
     }
 
     return array;
   };
 
   useEffect(() => {
-    const shuffledRoles = shuffle([...roles]);
-    const updatedPlayers = players.map((player, index) => {
-      player.role = shuffledRoles[index];
-      return player;
-    });
-    updatedPlayers.forEach(updatePlayer);
-  }, [players, roles, updatePlayer]);
+    const shuffledRoles = shuffle([...roles], customRolesOrder);
+
+    for (let i = 0; i < players.length; i++) {
+      players[i].role = shuffledRoles[i];
+      updatePlayer(players[i]);
+      addItemToCurrentNightSummary(
+        `${players[i].name} assigned as ${shuffledRoles[i].name}`
+      );
+    }
+  }, []);
 
   const handleNextStep = () => {
     setGameState("nightActions");

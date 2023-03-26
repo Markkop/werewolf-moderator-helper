@@ -14,6 +14,11 @@ interface GameContextState {
   updateRole: (role: Role) => void;
   gameState: string;
   setGameState: (state: string) => void;
+  nightSummaries: string[];
+  addNightSummary: (summary: string) => void;
+  currentNightSummary: string[];
+  addItemToCurrentNightSummary: (item: string) => void;
+  customRolesOrder: string[];
 }
 
 const GameContext = createContext<GameContextState | undefined>(undefined);
@@ -28,9 +33,13 @@ export const useGameContext = () => {
 
 interface Props {
   children: React.ReactNode;
+  customRolesOrder?: string[];
 }
 
-export const GameProvider: React.FC<Props> = ({ children }) => {
+export const GameProvider: React.FC<Props> = ({
+  children,
+  customRolesOrder,
+}) => {
   const [players, setPlayers] = useState<Player[]>([
     {
       id: 1,
@@ -63,8 +72,13 @@ export const GameProvider: React.FC<Props> = ({ children }) => {
       isDead: false,
     },
   ]);
-  const [roles, setRoles] = useState<Role[]>([...existingRoles]);
+  const [roles, setRoles] = useState<Role[]>([
+    existingRoles[0],
+    ...existingRoles,
+  ]);
   const [gameState, setGameState] = useState("idle");
+  const [nightSummaries, setnightSummaries] = useState([]);
+  const [currentNightSummary, setCurrentNightSummary] = useState<string[]>([]);
 
   const addPlayer = (name: string) => {
     const newPlayer: Player = {
@@ -102,6 +116,14 @@ export const GameProvider: React.FC<Props> = ({ children }) => {
     );
   };
 
+  const addNightSummary = (summary: string) => {
+    setnightSummaries((prevSummaries) => [...prevSummaries, summary]);
+  };
+
+  const addItemToCurrentNightSummary = (item: string) => {
+    setCurrentNightSummary((prevItems) => [...prevItems, item]);
+  };
+
   return (
     <GameContext.Provider
       value={{
@@ -115,6 +137,11 @@ export const GameProvider: React.FC<Props> = ({ children }) => {
         updateRole,
         gameState,
         setGameState,
+        nightSummaries,
+        addNightSummary,
+        currentNightSummary,
+        addItemToCurrentNightSummary,
+        customRolesOrder,
       }}
     >
       {children}

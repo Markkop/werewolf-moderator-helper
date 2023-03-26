@@ -22,8 +22,8 @@ export default function SetupRoles() {
     <div>
       <h2>Setup Roles</h2>
       <ul>
-        {roles.map((role) => (
-          <li key={role.name}>
+        {roles.map((role, index) => (
+          <li key={index}>
             {role.name}{" "}
             <button onClick={() => handleRemoveRole(role)}>Remove</button>
           </li>
