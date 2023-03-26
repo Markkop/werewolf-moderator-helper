@@ -32,7 +32,7 @@ test("Setups a default game", async () => {
   ).toBeInTheDocument();
 });
 
-test("Mafia tries to select another mafia", async () => {
+test("Mafia kills a player", async () => {
   await setupGame([
     "Mafioso", // Player 1
     "Townie", // Player 2
@@ -57,7 +57,7 @@ test("Mafia tries to select another mafia", async () => {
   });
 
   expect(
-    screen.getByText(`Player 2 was killed by Player 1 (Mafioso)`)
+    screen.getByText(`Player 2 (Townie) was kiled by Player 1 (Mafioso)`)
   ).toBeInTheDocument();
 });
 
@@ -76,6 +76,32 @@ test("Mafia can't select other mafia", async () => {
   expect(
     screen.getByText(
       `Each night wake with the Mafia. You vote for a player to kill.`
+    )
+  ).toBeInTheDocument();
+});
+
+test("Mafia kills a player", async () => {
+  await setupGame([
+    "Mafioso", // Player 1
+    "Townie", // Player 2
+    "Sheriff", // Player 3
+    "Doctor", // Player 4
+    "Townie", // Player 5
+  ]);
+
+  performNightAction("Player 2"); // Mafioso kills Player 2
+  performNightAction("Player 2"); // Doctor heals Player 2
+  performNightAction("Player 4"); // Sheriff investigates Player 5
+
+  fireEvent.click(screen.getByText("Finish Night Actions"));
+
+  await waitFor(() => {
+    expect(screen.getByText("Moderator Announcement")).toBeInTheDocument();
+  });
+
+  expect(
+    screen.getByText(
+      `Player 2 (Townie) was attacked by Player 1 (Mafioso), but healed by Player 4 (Doctor)`
     )
   ).toBeInTheDocument();
 });

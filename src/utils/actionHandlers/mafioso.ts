@@ -1,5 +1,5 @@
 import { Player, RoleAction } from "../../interfaces";
-import { filterAlivePlayers, getPlayersByFaction } from "../night";
+import { filterAlivePlayers, getPlayersByFaction } from "../players";
 
 export function handleMafiosoAction(players: Player[], targetId: number): RoleAction {
   const alivePlayers = filterAlivePlayers(players);

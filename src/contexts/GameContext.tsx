@@ -45,8 +45,8 @@ export const GameProvider: React.FC<Props> = ({
     (_, i) => ({
       id: i,
       name: `Player ${i + 1}`,
-      role: { name: "", description: "", alignment: "", points: "" },
       isDead: false,
+      status: {},
     })
   );
 
@@ -70,7 +70,6 @@ export const GameProvider: React.FC<Props> = ({
     const newPlayer: Player = {
       id: Date.now(),
       name,
-      role: { name: "", description: "", alignment: "", points: "" },
       isDead: false,
     };
     setPlayers([...players, newPlayer]);

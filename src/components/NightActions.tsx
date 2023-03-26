@@ -4,12 +4,13 @@ import { Player, RoleAction } from "../interfaces";
 import { handleDoctorAction } from "../utils/actionHandlers/doctor";
 import { handleMafiosoAction } from "../utils/actionHandlers/mafioso";
 import { handleSheriffAction } from "../utils/actionHandlers/sheriff";
+import { finishNightActionsHandler } from "../utils/finishNightActionsHandler";
 import {
   filterAlivePlayers,
   filterPlayersWithNightAction,
   orderPlayersByRole,
   selectAndFilterMafiosos,
-} from "../utils/night";
+} from "../utils/players";
 
 export default function NightActions() {
   const { players, updatePlayer, setGameState, addItemToCurrentNightSummary } =
@@ -51,51 +52,15 @@ export default function NightActions() {
   };
 
   const handleFinishNightActions = () => {
-    const actions = players.map((player) => player.role.action);
-    const killAction = actions.find((action) => action?.type === "kill");
-    const killer = players.find(
-      (player) => player.role.action?.type === "kill"
-    );
-    const healAction = actions.find((action) => action?.type === "heal");
-    const healer = players.find(
-      (player) => player.role.action?.type === "heal"
+    const afterNightPlayers = finishNightActionsHandler(
+      players,
+      addItemToCurrentNightSummary
     );
 
-    if (healAction) {
-      addItemToCurrentNightSummary(
-        `${healer.name} (${healer.role.name}) healed ${
-          players.find((player) => player.id === healAction.targetId)?.name
-        }`
-      );
-    }
-
-    if (
-      killAction &&
-      (!healAction ||
-        (healAction && killAction.targetId !== healAction.targetId))
-    ) {
-      const killedPlayer = players.find(
-        (player) => player.id === killAction.targetId
-      );
-      if (killedPlayer) {
-        const killedBy = players.find(
-          (player) => player.role.action?.type === "kill"
-        );
-        addItemToCurrentNightSummary(
-          `${killedPlayer.name} was killed by ${
-            killedBy.name
-          } ${`(${killedBy.role.name})`}`
-        );
-        killedPlayer.isDead = true;
-        updatePlayer(killedPlayer);
-      }
-    }
-
-    players.forEach((player) => {
-      if (player.role.action) {
-        delete player.role.action;
-        updatePlayer(player);
-      }
+    afterNightPlayers.forEach((player) => {
+      if (player.role.action) delete player.role.action;
+      if (player.status) delete player.status;
+      updatePlayer(player);
     });
 
     setGameState("moderatorAnnouncement");

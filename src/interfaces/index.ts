@@ -2,8 +2,12 @@
 export interface Player {
   id: number;
   name: string;
-  role: Role;
   isDead: boolean;
+  role?: Role;
+  status?: {
+    killer?: Player;
+    healer?: Player;
+  };
 }
 
 export type RoleActionType = 'heal' | 'investigate' | 'kill';

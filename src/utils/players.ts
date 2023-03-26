@@ -48,3 +48,20 @@ export function getPlayersByRole(players: Player[], role: string) {
 export function getPlayersByFaction(players: Player[], faction: Faction) {
   return players.filter((player) => player.role.faction === faction);
 }
+
+export function getPlayersByAlignment(players: Player[], alignment: string) {
+  return players.filter((player) => player.role.alignment === alignment);
+}
+
+export function getPlayersByActionType(players: Player[], actionType: string) {
+  return players.filter((player) => player.role.action?.type === actionType);
+}
+
+export function setStatusForPlayers(players: Player[], statusKey: string, actionPlayers: Player[]) {
+  players.forEach((player) => {
+    const matchingPlayer = actionPlayers.find((actionPlayer) => actionPlayer.role.action?.targetId === player.id);
+    if (matchingPlayer) {
+      player.status[statusKey] = matchingPlayer;
+    }
+  });
+}
