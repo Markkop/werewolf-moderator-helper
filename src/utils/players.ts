@@ -60,8 +60,11 @@ export function getPlayersByActionType(players: Player[], actionType: string) {
 export function setStatusForPlayers(players: Player[], statusKey: string, actionPlayers: Player[]) {
   players.forEach((player) => {
     const matchingPlayer = actionPlayers.find((actionPlayer) => actionPlayer.role.action?.targetId === player.id);
-    if (matchingPlayer) {
-      player.status[statusKey] = matchingPlayer;
+    if (matchingPlayer && player.status) {
+      player.status = {
+        ...player.status,
+        [statusKey]: matchingPlayer,
+      };
     }
   });
 }

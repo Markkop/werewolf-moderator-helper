@@ -1,43 +1,34 @@
-import AssignRoles from "../components/AssignRoles";
-import DiscussionAndVoting from "../components/DiscussionAndVoting";
-import HangingStep from "../components/HangingStep";
+import Trial from "../components/Trial";
 import ModeratorAnnouncement from "../components/ModeratorAnnouncement";
 import NightActions from "../components/NightActions";
 import SetupPlayers from "../components/SetupPlayers";
 import SetupRoles from "../components/SetupRoles";
+import Sleep from "../components/Sleep";
 import { useGameContext } from "../contexts/GameContext";
 
 const Game: React.FC = () => {
   const { gameState, gameHistory } = useGameContext();
 
-  const renderGameState = () => {
-    switch (gameState) {
-      case "setupPlayers":
-        return <SetupPlayers />;
-      case "setupRoles":
-        return <SetupRoles />;
-      case "assignRoles":
-        return <AssignRoles />;
-      case "nightActions":
-        return <NightActions />;
-      case "moderatorAnnouncement":
-        return <ModeratorAnnouncement />;
-      case "discussionAndVoting":
-        return <DiscussionAndVoting />;
-      case "hangingStep":
-        return <HangingStep />;
-      default:
-        return <SetupPlayers />;
-    }
+  const gameStateMapping = {
+    setupPlayers: <SetupPlayers />,
+    setupRoles: <SetupRoles />,
+    night: <NightActions />,
+    moderatorAnnouncement: <ModeratorAnnouncement />,
+    trial: <Trial />,
+    sleep: <Sleep />,
   };
-  console.log(gameHistory);
+
+  const renderGameState = () => {
+    return gameStateMapping[gameState] || <SetupPlayers />;
+  };
+
   return (
     <div>
       <div>{renderGameState()}</div>
       <div>
         <h2>Game History</h2>
         <ul>
-          {gameHistory.flat().map((historyItem, index) => (
+          {gameHistory.map((historyItem, index) => (
             <li key={index}>{historyItem}</li>
           ))}
         </ul>

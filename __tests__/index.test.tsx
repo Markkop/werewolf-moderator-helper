@@ -50,14 +50,14 @@ test("Mafia kills a player", async () => {
   // Sheriff choose a target to investigate
   performNightAction("Player 4"); // Sheriff investigates Player 5
 
-  fireEvent.click(screen.getByText("Finish Night Actions"));
-
   await waitFor(() => {
     expect(screen.getByText("Moderator Announcement")).toBeInTheDocument();
   });
 
   expect(
-    screen.getByText(`Player 2 (Townie) was kiled by Player 1 (Mafioso)`)
+    screen.getByText(`Player 2 (Townie) was kiled by Player 1 (Mafioso)`, {
+      exact: false,
+    })
   ).toBeInTheDocument();
 });
 
@@ -92,8 +92,6 @@ test("Mafia kills a player", async () => {
   performNightAction("Player 2"); // Mafioso kills Player 2
   performNightAction("Player 2"); // Doctor heals Player 2
   performNightAction("Player 4"); // Sheriff investigates Player 5
-
-  fireEvent.click(screen.getByText("Finish Night Actions"));
 
   await waitFor(() => {
     expect(screen.getByText("Moderator Announcement")).toBeInTheDocument();

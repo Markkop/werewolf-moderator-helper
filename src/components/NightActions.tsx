@@ -4,7 +4,6 @@ import { Player, RoleAction } from "../interfaces";
 import { handleDoctorAction } from "../utils/actionHandlers/doctor";
 import { handleMafiosoAction } from "../utils/actionHandlers/mafioso";
 import { handleSheriffAction } from "../utils/actionHandlers/sheriff";
-import { finishNightActionsHandler } from "../utils/finishNightActionsHandler";
 import {
   filterAlivePlayers,
   filterPlayersWithNightAction,
@@ -13,14 +12,8 @@ import {
 } from "../utils/players";
 
 export default function NightActions() {
-  const {
-    players,
-    updatePlayer,
-    setGameState,
-    addItemToHistory,
-    night,
-    addItemToAnnouncement,
-  } = useGameContext();
+  const { players, updatePlayer, setGameState, addItemToHistory, night } =
+    useGameContext();
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
   const alivePlayers = filterAlivePlayers(players);
@@ -54,33 +47,13 @@ export default function NightActions() {
     );
     currentPlayer.role.action = action;
     updatePlayer(currentPlayer);
-    handleNextPlayer();
+
+    if (currentPlayerIndex === orderedPlayers.length - 1) {
+      setGameState("moderatorAnnouncement");
+    } else {
+      handleNextPlayer();
+    }
   };
-
-  const handleFinishNightActions = () => {
-    const afterNightPlayers = finishNightActionsHandler(
-      players,
-      addItemToHistory,
-      addItemToAnnouncement
-    );
-
-    afterNightPlayers.forEach((player) => {
-      if (player.role.action) delete player.role.action;
-      if (player?.status) delete player?.status;
-      updatePlayer(player);
-    });
-
-    setGameState("moderatorAnnouncement");
-  };
-
-  if (!currentPlayer || currentPlayerIndex >= alivePlayers.length) {
-    return (
-      <div>
-        <h2>Night Actions</h2>
-        <button onClick={handleFinishNightActions}>Finish Night Actions</button>
-      </div>
-    );
-  }
 
   const isDisabled = (player: Player) => {
     if (currentPlayer.role.name === "Mafioso") {

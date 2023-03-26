@@ -29,12 +29,12 @@ export function finishNightActionsHandler(players: Player[], addItemToHistory: (
     }
 
     if (player.status?.killer) {
-      addItemToHistory(
-        `${playerTag} was kiled by ${killerTag} `
-      )
       player.isDead = true;
+      addItemToHistory(
+        `☠️ ${playerTag} was kiled by ${killerTag} `
+      )
       addItemToAnnouncement(
-        `${player.name} was killed and they were a ${player.role.name}!`
+        `☠️ ${player.name} was killed and they were a ${player.role.name}!`
       )
       return
     }

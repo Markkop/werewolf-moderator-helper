@@ -2,10 +2,19 @@ import React from "react";
 import { useGameContext } from "../contexts/GameContext";
 import { existingRoles } from "../data/existingRoles";
 import { Role } from "../interfaces";
+import { assignRolesToPlayers } from "../utils/roles";
 
 export default function SetupRoles() {
-  const { roles, addRole, removeRole, setGameState } = useGameContext();
-
+  const {
+    players,
+    roles,
+    updatePlayer,
+    setGameState,
+    customRolesOrder,
+    addItemToHistory,
+    addRole,
+    removeRole,
+  } = useGameContext();
   const handleAddRole = (role: Role) => {
     addRole(role);
   };
@@ -15,7 +24,15 @@ export default function SetupRoles() {
   };
 
   const handleNextStep = () => {
-    setGameState("assignRoles");
+    assignRolesToPlayers(
+      players,
+      roles,
+      customRolesOrder,
+      updatePlayer,
+      addItemToHistory
+    );
+
+    setGameState("sleep");
   };
 
   return (

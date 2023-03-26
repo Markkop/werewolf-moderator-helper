@@ -67,7 +67,7 @@ export const GameProvider: React.FC<Props> = ({
   const [roles, setRoles] = useState<Role[]>(defaultRoles);
   const [gameState, setGameState] = useState("idle");
   const [gameHistory, setGameHistory] = useState([]);
-  const [night, setNight] = useState(1);
+  const [night, setNight] = useState(0);
   const [announcement, setNightAnnouncement] = useState([]);
 
   const addPlayer = (name: string) => {
