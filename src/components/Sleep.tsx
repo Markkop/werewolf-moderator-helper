@@ -29,7 +29,7 @@ export default function SleepStep() {
         {" ⏳ "}
         {`${seconds}s`}
       </p>
-      <p>{lastHistory}</p>
+      <p>{night > 0 && lastHistory}</p>
       <button onClick={handleNextStep}>Next step</button>
     </div>
   );
