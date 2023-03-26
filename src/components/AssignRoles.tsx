@@ -53,6 +53,13 @@ export default function AssignRoles() {
   return (
     <div>
       <h2>Roles Assigned</h2>
+      <ul>
+        {players.map((player) => (
+          <li key={player.id}>
+            {player.name} - {player.role?.name}
+          </li>
+        ))}
+      </ul>
       <button onClick={handleNextStep}>Next step</button>
     </div>
   );

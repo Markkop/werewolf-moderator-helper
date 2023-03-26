@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <GameProvider>
         <Head>
-          <title>NextJS TailwindCSS TypeScript Starter</title>
+          <title>Moderator Helper</title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
