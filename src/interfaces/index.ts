@@ -19,8 +19,8 @@ export interface Role {
   alignment: string;
   points: string;
   action?: RoleAction;
+  faction: Faction
 }
 
 export type Alignment = 'Good' | 'Evil'
-
-export type Step = 'players' | 'roles' | 'night' | 'day' | 'end'
+export type Faction = 'Mafia' | 'Town'

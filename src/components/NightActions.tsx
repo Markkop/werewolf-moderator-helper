@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useGameContext } from "../contexts/GameContext";
-import { RoleActionType } from "../interfaces";
+import { roleOrder } from "../data/existingRoles";
+import { Player, RoleActionType } from "../interfaces";
 
 export default function NightActions() {
   const { players, updatePlayer, setGameState, addItemToCurrentNightSummary } =
@@ -10,23 +11,24 @@ export default function NightActions() {
   const alivePlayers = players.filter((player) => !player.isDead);
   const playersWithNightActions = alivePlayers.filter(
     (player) => player.role.name !== "Townie"
-  ); // mafioso first, then doctor, then sheriff
-  const orderedPlayers = playersWithNightActions.sort((a, b) => {
-    if (a.role.name === "Mafioso") {
-      return -1;
-    } else if (b.role.name === "Mafioso") {
-      return 1;
-    } else if (a.role.name === "Doctor") {
-      return -1;
-    } else if (b.role.name === "Doctor") {
-      return 1;
-    } else if (a.role.name === "Sheriff") {
-      return -1;
-    } else if (b.role.name === "Sheriff") {
-      return 1;
-    }
-    return 0;
-  });
+  );
+
+  function orderPlayersByRole(players: Player[]) {
+    return players.sort((a, b) => {
+      const aIndex = roleOrder.indexOf(a.role.name);
+      const bIndex = roleOrder.indexOf(b.role.name);
+
+      if (aIndex > bIndex) {
+        return 1;
+      } else if (aIndex < bIndex) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  const orderedPlayers = orderPlayersByRole(playersWithNightActions);
 
   const currentPlayer = orderedPlayers[currentPlayerIndex];
 
