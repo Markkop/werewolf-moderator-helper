@@ -74,6 +74,8 @@ test("Mafia can't select other mafia", async () => {
   performNightAction("Player 2"); // Mafioso tries to target Player 2
 
   expect(
-    screen.getByText(`Night Actions - Player 1 (Mafioso)`)
+    screen.getByText(
+      `Each night wake with the Mafia. You vote for a player to kill.`
+    )
   ).toBeInTheDocument();
 });

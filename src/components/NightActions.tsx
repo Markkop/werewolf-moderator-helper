@@ -115,6 +115,7 @@ export default function NightActions() {
       <h2>
         {`Night Actions - ${currentPlayer.name} (${currentPlayer.role.name})`}
       </h2>
+      <p>{currentPlayer.role.description}</p>
       <ul>
         {alivePlayers.map((player) => (
           <li key={player.id}>
