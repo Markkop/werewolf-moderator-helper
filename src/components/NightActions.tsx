@@ -160,7 +160,7 @@ export default function NightActions() {
               onClick={() => handleAction(player.id)}
               disabled={
                 currentPlayer.role.name === "Mafioso" &&
-                player.role.name === "Mafioso"
+                player.role.faction === "Mafia"
               }
             >
               {`${player.name} (${player.role.name})`}
