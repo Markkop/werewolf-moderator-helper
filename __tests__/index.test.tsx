@@ -22,6 +22,16 @@ const performNightAction = (targetName: string) => {
   );
 };
 
+test("Setups a default game", async () => {
+  await setupGame();
+
+  expect(
+    screen.getByText(`Night Actions - Player`, {
+      exact: false,
+    })
+  ).toBeInTheDocument();
+});
+
 test("Mafia tries to select another mafia", async () => {
   await setupGame([
     "Mafioso", // Player 1

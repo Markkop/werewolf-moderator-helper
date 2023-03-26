@@ -43,7 +43,6 @@ export default function NightActions() {
       );
 
       if (mafiosos.find((mafioso) => mafioso.id === targetId)) {
-        console.log("a");
         return;
       }
 

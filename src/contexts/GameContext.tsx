@@ -41,7 +41,7 @@ export const GameProvider: React.FC<Props> = ({
   customRolesOrder,
 }) => {
   const defaultPlayers: Player[] = Array.from(
-    { length: customRolesOrder.length || 5 },
+    { length: customRolesOrder?.length || 5 },
     (_, i) => ({
       id: i,
       name: `Player ${i + 1}`,
@@ -51,7 +51,7 @@ export const GameProvider: React.FC<Props> = ({
   );
 
   const [players, setPlayers] = useState<Player[]>(defaultPlayers);
-  const defaultRoles = customRolesOrder
+  const defaultRoles = customRolesOrder?.length
     ? customRolesOrder.map((roleName) => {
         const role = existingRoles.find((role) => role.name === roleName);
         if (!role) {

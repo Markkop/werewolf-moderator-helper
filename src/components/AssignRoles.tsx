@@ -41,7 +41,7 @@ export default function AssignRoles() {
       players[i].role = shuffledRoles[i];
       updatePlayer(players[i]);
       addItemToCurrentNightSummary(
-        `${players[i].name} assigned as ${shuffledRoles[i].name}`
+        `${players[i].name} assigned as ${players[i].role?.name}`
       );
     }
   }, []);
