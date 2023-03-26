@@ -8,7 +8,7 @@ import SetupRoles from "../components/SetupRoles";
 import { useGameContext } from "../contexts/GameContext";
 
 const Game: React.FC = () => {
-  const { gameState } = useGameContext();
+  const { gameState, gameHistory } = useGameContext();
 
   const renderGameState = () => {
     switch (gameState) {
@@ -30,8 +30,20 @@ const Game: React.FC = () => {
         return <SetupPlayers />;
     }
   };
-
-  return <div>{renderGameState()}</div>;
+  console.log(gameHistory);
+  return (
+    <div>
+      <div>{renderGameState()}</div>
+      <div>
+        <h2>Game History</h2>
+        <ul>
+          {gameHistory.flat().map((historyItem, index) => (
+            <li key={index}>{historyItem}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 };
 
 export default Game;

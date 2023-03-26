@@ -13,8 +13,14 @@ import {
 } from "../utils/players";
 
 export default function NightActions() {
-  const { players, updatePlayer, setGameState, addItemToCurrentNightSummary } =
-    useGameContext();
+  const {
+    players,
+    updatePlayer,
+    setGameState,
+    addItemToHistory,
+    night,
+    addItemToAnnouncement,
+  } = useGameContext();
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
   const alivePlayers = filterAlivePlayers(players);
@@ -41,7 +47,7 @@ export default function NightActions() {
     const actionHandler = mapRoleToActionHandler[currentPlayer.role.name];
     const action = actionHandler(players, targetId);
 
-    addItemToCurrentNightSummary(
+    addItemToHistory(
       `${currentPlayer.name} (${currentPlayer.role.name}) selected ${
         players.find((player) => player.id === targetId)?.name
       }`
@@ -54,12 +60,13 @@ export default function NightActions() {
   const handleFinishNightActions = () => {
     const afterNightPlayers = finishNightActionsHandler(
       players,
-      addItemToCurrentNightSummary
+      addItemToHistory,
+      addItemToAnnouncement
     );
 
     afterNightPlayers.forEach((player) => {
       if (player.role.action) delete player.role.action;
-      if (player.status) delete player.status;
+      if (player?.status) delete player?.status;
       updatePlayer(player);
     });
 
@@ -75,10 +82,27 @@ export default function NightActions() {
     );
   }
 
+  const isDisabled = (player: Player) => {
+    if (currentPlayer.role.name === "Mafioso") {
+      return player.role.faction === "Mafia";
+    }
+
+    if (currentPlayer.role.name === "Sheriff") {
+      return player.id === currentPlayer.id;
+    }
+
+    return false;
+  };
+
+  const alignmentIcon = (player: Player) => {
+    if (currentPlayer.role.name !== "Sheriff") return;
+    return player.role.alignment === "Good" ? "👍" : "👎";
+  };
+
   return (
     <div>
       <h2>
-        {`Night Actions - ${currentPlayer.name} (${currentPlayer.role.name})`}
+        {`Night ${night} Actions - ${currentPlayer.name} (${currentPlayer.role.name})`}
       </h2>
       <p>{currentPlayer.role.description}</p>
       <ul>
@@ -86,12 +110,9 @@ export default function NightActions() {
           <li key={player.id}>
             <button
               onClick={() => handleAction(player.id)}
-              disabled={
-                currentPlayer.role.name === "Mafioso" &&
-                player.role.faction === "Mafia"
-              }
+              disabled={isDisabled(player)}
             >
-              {`${player.name} (${player.role.name})`}
+              {alignmentIcon(player)} {`${player.name} (${player.role.name})`}
             </button>
           </li>
         ))}

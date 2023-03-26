@@ -8,7 +8,7 @@ export default function AssignRoles() {
     updatePlayer,
     setGameState,
     customRolesOrder,
-    addItemToCurrentNightSummary,
+    addItemToHistory,
   } = useGameContext();
 
   const shuffle = (array: any[], customRolesOrder: string[]) => {
@@ -40,13 +40,12 @@ export default function AssignRoles() {
     for (let i = 0; i < players.length; i++) {
       players[i].role = shuffledRoles[i];
       updatePlayer(players[i]);
-      addItemToCurrentNightSummary(
-        `${players[i].name} assigned as ${players[i].role?.name}`
-      );
+      addItemToHistory(`${players[i].name} is ${players[i].role.name}`);
     }
   }, []);
 
   const handleNextStep = () => {
+    addItemToHistory("Night 1");
     setGameState("nightActions");
   };
 

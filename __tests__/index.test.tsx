@@ -26,7 +26,7 @@ test("Setups a default game", async () => {
   await setupGame();
 
   expect(
-    screen.getByText(`Night Actions - Player`, {
+    screen.getByText(`Night 1 Actions - Player`, {
       exact: false,
     })
   ).toBeInTheDocument();

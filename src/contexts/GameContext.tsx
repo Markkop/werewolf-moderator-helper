@@ -14,11 +14,14 @@ interface GameContextState {
   updateRole: (role: Role) => void;
   gameState: string;
   setGameState: (state: string) => void;
-  nightSummaries: string[];
-  addNightSummary: (summary: string) => void;
-  currentNightSummary: string[];
-  addItemToCurrentNightSummary: (item: string) => void;
+  gameHistory: string[];
+  addItemToHistory: (item: string) => void;
   customRolesOrder: string[];
+  announcement: string[];
+  addItemToAnnouncement: (item: string) => void;
+  resetAnnouncement: () => void;
+  night: number;
+  goToNextNight: () => void;
 }
 
 const GameContext = createContext<GameContextState | undefined>(undefined);
@@ -63,8 +66,9 @@ export const GameProvider: React.FC<Props> = ({
 
   const [roles, setRoles] = useState<Role[]>(defaultRoles);
   const [gameState, setGameState] = useState("idle");
-  const [nightSummaries, setnightSummaries] = useState([]);
-  const [currentNightSummary, setCurrentNightSummary] = useState<string[]>([]);
+  const [gameHistory, setGameHistory] = useState([]);
+  const [night, setNight] = useState(1);
+  const [announcement, setNightAnnouncement] = useState([]);
 
   const addPlayer = (name: string) => {
     const newPlayer: Player = {
@@ -101,13 +105,20 @@ export const GameProvider: React.FC<Props> = ({
     );
   };
 
-  const addNightSummary = (summary: string) => {
-    setnightSummaries((prevSummaries) => [...prevSummaries, summary]);
+  const addItemToHistory = (item: string) => {
+    setGameHistory((prevItems) => [...prevItems, item]);
   };
 
-  const addItemToCurrentNightSummary = (item: string) => {
-    console.log(item);
-    setCurrentNightSummary((prevItems) => [...prevItems, item]);
+  const goToNextNight = () => {
+    setNight((prevNight) => prevNight + 1);
+  };
+
+  const addItemToAnnouncement = (item: string) => {
+    setNightAnnouncement((prevItems) => [...prevItems, item]);
+  };
+
+  const resetAnnouncement = () => {
+    setNightAnnouncement([]);
   };
 
   return (
@@ -123,11 +134,14 @@ export const GameProvider: React.FC<Props> = ({
         updateRole,
         gameState,
         setGameState,
-        nightSummaries,
-        addNightSummary,
-        currentNightSummary,
-        addItemToCurrentNightSummary,
+        gameHistory,
+        addItemToHistory,
         customRolesOrder,
+        announcement,
+        addItemToAnnouncement,
+        resetAnnouncement,
+        night,
+        goToNextNight,
       }}
     >
       {children}

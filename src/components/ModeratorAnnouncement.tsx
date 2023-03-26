@@ -2,11 +2,9 @@ import React from "react";
 import { useGameContext } from "../contexts/GameContext";
 
 export default function ModeratorAnnouncement() {
-  const { setGameState, currentNightSummary } = useGameContext();
+  const { setGameState, announcement } = useGameContext();
 
-  // Implement the logic to generate a summary of what happened that night
-  // For example:
-  const summary = currentNightSummary.map((text, index) => {
+  const summary = announcement.map((text, index) => {
     return <div key={index}>{text}</div>;
   });
 
