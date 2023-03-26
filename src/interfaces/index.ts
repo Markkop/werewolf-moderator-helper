@@ -19,7 +19,8 @@ export interface Role {
   alignment: string;
   points: string;
   action?: RoleAction;
-  faction: Faction
+  faction: Faction,
+  hasNightAction: boolean
 }
 
 export type Alignment = 'Good' | 'Evil'

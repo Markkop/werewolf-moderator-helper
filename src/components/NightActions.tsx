@@ -1,34 +1,25 @@
 import React, { useState } from "react";
 import { useGameContext } from "../contexts/GameContext";
-import { roleOrder } from "../data/existingRoles";
-import { Player, RoleActionType } from "../interfaces";
+import { Player, RoleAction } from "../interfaces";
+import { handleDoctorAction } from "../utils/actionHandlers/doctor";
+import { handleMafiosoAction } from "../utils/actionHandlers/mafioso";
+import { handleSheriffAction } from "../utils/actionHandlers/sheriff";
+import {
+  filterAlivePlayers,
+  filterPlayersWithNightAction,
+  orderPlayersByRole,
+  selectAndFilterMafiosos,
+} from "../utils/night";
 
 export default function NightActions() {
   const { players, updatePlayer, setGameState, addItemToCurrentNightSummary } =
     useGameContext();
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
-  const alivePlayers = players.filter((player) => !player.isDead);
-  const playersWithNightActions = alivePlayers.filter(
-    (player) => player.role.name !== "Townie"
-  );
-
-  function orderPlayersByRole(players: Player[]) {
-    return players.sort((a, b) => {
-      const aIndex = roleOrder.indexOf(a.role.name);
-      const bIndex = roleOrder.indexOf(b.role.name);
-
-      if (aIndex > bIndex) {
-        return 1;
-      } else if (aIndex < bIndex) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-  }
-
-  const orderedPlayers = orderPlayersByRole(playersWithNightActions);
+  const alivePlayers = filterAlivePlayers(players);
+  const playersWithNightActions = filterPlayersWithNightAction(alivePlayers);
+  const actingPlayers = selectAndFilterMafiosos(playersWithNightActions);
+  const orderedPlayers = orderPlayersByRole(actingPlayers);
 
   const currentPlayer = orderedPlayers[currentPlayerIndex];
 
@@ -37,53 +28,26 @@ export default function NightActions() {
   };
 
   const handleAction = (targetId: number) => {
-    const action = getActionForRole(currentPlayer.role.name, targetId);
+    const mapRoleToActionHandler: Record<
+      string,
+      (players: Player[], targetId: number) => RoleAction
+    > = {
+      Mafioso: handleMafiosoAction,
+      Doctor: handleDoctorAction,
+      Sheriff: handleSheriffAction,
+    };
 
-    if (currentPlayer.role.name === "Mafioso") {
-      const mafiosos = alivePlayers.filter(
-        (player) => player.role.name === "Mafioso"
-      );
+    const actionHandler = mapRoleToActionHandler[currentPlayer.role.name];
+    const action = actionHandler(players, targetId);
 
-      if (mafiosos.find((mafioso) => mafioso.id === targetId)) {
-        return;
-      }
-
-      mafiosos.forEach((mafioso) => {
-        mafioso.role.action = action;
-        updatePlayer(mafioso);
-      });
-      handleNextPlayer();
-
-      addItemToCurrentNightSummary(
-        `${currentPlayer.name} (${currentPlayer.role.name}) selected ${
-          players.find((player) => player.id === targetId)?.name
-        }`
-      );
-      return;
-    }
-
+    addItemToCurrentNightSummary(
+      `${currentPlayer.name} (${currentPlayer.role.name}) selected ${
+        players.find((player) => player.id === targetId)?.name
+      }`
+    );
     currentPlayer.role.action = action;
     updatePlayer(currentPlayer);
     handleNextPlayer();
-  };
-
-  const getActionForRole = (
-    roleName: string,
-    targetId: number
-  ): { type: RoleActionType; targetId: number } => {
-    if (roleName === "Doctor") {
-      return { type: "heal", targetId };
-    }
-
-    if (roleName === "Sheriff") {
-      return { type: "investigate", targetId };
-    }
-
-    if (roleName === "Mafioso") {
-      return { type: "kill", targetId };
-    }
-
-    throw new Error(`Unsupported role: ${roleName}`);
   };
 
   const handleFinishNightActions = () => {
@@ -145,8 +109,6 @@ export default function NightActions() {
       </div>
     );
   }
-
-  // disabled if the current player is mafioso and the target options are mafiosos
 
   return (
     <div>

@@ -9,6 +9,7 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     points: '1',
     faction: 'Town',
+    hasNightAction: false,
   },
   {
     name: 'Sheriff',
@@ -16,19 +17,23 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     points: '7',
     faction: 'Town',
+    hasNightAction: true,
   },
   {
     name: 'Doctor',
     description: 'Each night choose a player to heal. They cannot be killed that night.',
     alignment: 'Good',
     points: '4',
-    faction: 'Town'
+    faction: 'Town',
+    hasNightAction: true,
+
   },
   {
     name: 'Mafioso',
     description: 'Each night wake with the Mafia. You vote for a player to kill.',
     alignment: 'Evil',
     points: '-6',
-    faction: 'Mafia'
+    faction: 'Mafia',
+    hasNightAction: true,
   },
 ];
