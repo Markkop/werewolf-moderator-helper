@@ -1,13 +1,13 @@
-import Trial from "../components/Trial";
-import ModeratorAnnouncement from "../components/ModeratorAnnouncement";
-import NightActions from "../components/NightActions";
-import SetupPlayers from "../components/SetupPlayers";
-import SetupRoles from "../components/SetupRoles";
-import Sleep from "../components/Sleep";
-import { useGameContext } from "../contexts/GameContext";
+import Trial from '../components/Trial'
+import ModeratorAnnouncement from '../components/ModeratorAnnouncement'
+import NightActions from '../components/NightActions'
+import SetupPlayers from '../components/SetupPlayers'
+import SetupRoles from '../components/SetupRoles'
+import Sleep from '../components/Sleep'
+import { useGameContext } from '../contexts/GameContext'
 
 const Game: React.FC = () => {
-  const { gameState, gameHistory } = useGameContext();
+  const { gameState, gameHistory } = useGameContext()
 
   const gameStateMapping = {
     setupPlayers: <SetupPlayers />,
@@ -16,11 +16,11 @@ const Game: React.FC = () => {
     moderatorAnnouncement: <ModeratorAnnouncement />,
     trial: <Trial />,
     sleep: <Sleep />,
-  };
+  }
 
   const renderGameState = () => {
-    return gameStateMapping[gameState] || <SetupPlayers />;
-  };
+    return gameStateMapping[gameState] || <SetupPlayers />
+  }
 
   return (
     <div>
@@ -36,7 +36,7 @@ const Game: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Game;
+export default Game

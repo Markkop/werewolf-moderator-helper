@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { useGameContext } from "../contexts/GameContext";
+import React, { useState } from 'react'
+import { useGameContext } from '../contexts/GameContext'
 
 export default function SetupPlayers() {
-  const { players, addPlayer, removePlayer, setGameState } = useGameContext();
-  const [newPlayerName, setNewPlayerName] = useState("");
+  const { players, addPlayer, removePlayer, goToGameState } = useGameContext()
+  const [newPlayerName, setNewPlayerName] = useState('')
 
   const handleAddPlayer = () => {
-    addPlayer(newPlayerName);
-    setNewPlayerName("");
-  };
+    addPlayer(newPlayerName)
+    setNewPlayerName('')
+  }
 
   const handleRemovePlayer = (playerId: number) => {
-    removePlayer(playerId);
-  };
+    removePlayer(playerId)
+  }
 
   const handleNextStep = () => {
-    setGameState("setupRoles");
-  };
+    goToGameState('setupRoles')
+  }
 
   return (
     <div>
@@ -24,7 +24,7 @@ export default function SetupPlayers() {
       <ul>
         {players.map((player) => (
           <li key={player.id}>
-            {player.name}{" "}
+            {player.name}{' '}
             <button onClick={() => handleRemovePlayer(player.id)}>
               Remove
             </button>
@@ -39,5 +39,5 @@ export default function SetupPlayers() {
       <button onClick={handleAddPlayer}>Add player</button>
       <button onClick={handleNextStep}>Next step</button>
     </div>
-  );
+  )
 }

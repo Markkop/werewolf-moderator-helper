@@ -1,7 +1,7 @@
-import Head from "next/head";
-import { AppProps } from "next/app";
-import "../styles/index.css";
-import { GameProvider } from "../contexts/GameContext";
+import Head from 'next/head'
+import { AppProps } from 'next/app'
+import '../styles/index.css'
+import { GameProvider } from '../contexts/GameContext'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </GameProvider>
     </>
-  );
+  )
 }
 
-export default MyApp;
+export default MyApp

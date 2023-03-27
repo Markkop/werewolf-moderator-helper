@@ -1,7 +1,7 @@
-import { useGameContext } from "../contexts/GameContext";
+import { useGameContext } from '../contexts/GameContext'
 
-export default function SkipButton({ onClick, role = "default" }) {
-  const { addItemToHistory } = useGameContext();
+export default function SkipButton({ onClick, role = 'default' }) {
+  const { addItemToHistory } = useGameContext()
   const skipText = {
     Mafioso: {
       button: "⏭️ Don't kill anyone",
@@ -16,21 +16,21 @@ export default function SkipButton({ onClick, role = "default" }) {
       history: "⏭️ The Sheriff didn't investigate anyone",
     },
     default: {
-      button: "⏭️ Skip",
-      history: "⏭️ Skipped their action",
+      button: '⏭️ Skip',
+      history: '⏭️ Skipped their action',
     },
-  };
+  }
 
   return (
     <div>
       <button
         onClick={() => {
-          addItemToHistory(skipText[role].history);
-          onClick();
+          addItemToHistory(skipText[role].history)
+          onClick()
         }}
       >
         {skipText[role].button}
       </button>
     </div>
-  );
+  )
 }

@@ -7,5 +7,5 @@ export function Checkbox({ label, onChecked, onUnchecked }) {
       />
       {label}
     </label>
-  );
+  )
 }

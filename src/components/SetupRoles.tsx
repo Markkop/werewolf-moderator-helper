@@ -1,27 +1,27 @@
-import React from "react";
-import { useGameContext } from "../contexts/GameContext";
-import { existingRoles } from "../data/existingRoles";
-import { Role } from "../interfaces";
-import { assignRolesToPlayers } from "../utils/roles";
+import React from 'react'
+import { useGameContext } from '../contexts/GameContext'
+import { existingRoles } from '../data/existingRoles'
+import { Role } from '../interfaces'
+import { assignRolesToPlayers } from '../utils/roles'
 
 export default function SetupRoles() {
   const {
     players,
     roles,
     updatePlayer,
-    setGameState,
+    goToGameState,
     customRolesOrder,
     addItemToHistory,
     addRole,
     removeRole,
-  } = useGameContext();
+  } = useGameContext()
   const handleAddRole = (role: Role) => {
-    addRole(role);
-  };
+    addRole(role)
+  }
 
   const handleRemoveRole = (role: Role) => {
-    removeRole(role);
-  };
+    removeRole(role)
+  }
 
   const handleNextStep = () => {
     assignRolesToPlayers(
@@ -30,10 +30,10 @@ export default function SetupRoles() {
       customRolesOrder,
       updatePlayer,
       addItemToHistory
-    );
+    )
 
-    setGameState("sleep");
-  };
+    goToGameState('sleep')
+  }
 
   return (
     <div>
@@ -41,7 +41,7 @@ export default function SetupRoles() {
       <ul>
         {roles.map((role, index) => (
           <li key={index}>
-            {role.name}{" "}
+            {role.name}{' '}
             <button onClick={() => handleRemoveRole(role)}>Remove</button>
           </li>
         ))}
@@ -51,7 +51,7 @@ export default function SetupRoles() {
         <ul>
           {existingRoles.map((role) => (
             <li key={role.name}>
-              {role.name}{" "}
+              {role.name}{' '}
               <button onClick={() => handleAddRole(role)}>Add</button>
             </li>
           ))}
@@ -59,5 +59,5 @@ export default function SetupRoles() {
       </div>
       <button onClick={handleNextStep}>Next step</button>
     </div>
-  );
+  )
 }

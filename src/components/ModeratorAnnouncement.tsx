@@ -1,29 +1,22 @@
-import { useEffect } from "react";
-import { useGameContext } from "../contexts/GameContext";
-import { executeActions } from "../utils/executeActions";
+import { useGameContext } from '../contexts/GameContext'
 
 export default function ModeratorAnnouncement() {
   const {
     night,
-    setGameState,
+    goToGameState,
     announcement,
     addItemToHistory,
     resetAnnouncement,
-    addItemToAnnouncement,
-    players,
     removeActionAndStatus,
-  } = useGameContext();
+  } = useGameContext()
+  const nothingHappenedText = 'Nothing happened during the night.'
 
   const handleNextStep = () => {
-    removeActionAndStatus();
-    resetAnnouncement();
-    addItemToHistory(`☀️ Day #${night}`);
-    setGameState("trial");
-  };
-
-  useEffect(() => {
-    executeActions(players, addItemToHistory, addItemToAnnouncement);
-  }, []);
+    removeActionAndStatus()
+    resetAnnouncement()
+    addItemToHistory(`☀️ Day #${night}`)
+    goToGameState('trial')
+  }
 
   return (
     <div>
@@ -31,11 +24,11 @@ export default function ModeratorAnnouncement() {
       <div>
         {announcement?.length
           ? announcement.map((text, index) => {
-              return <div key={index}>{text}</div>;
+              return <div key={index}>{text}</div>
             })
-          : "Nothing happened during the night."}
+          : nothingHappenedText}
       </div>
       <button onClick={handleNextStep}>Next step</button>
     </div>
-  );
+  )
 }

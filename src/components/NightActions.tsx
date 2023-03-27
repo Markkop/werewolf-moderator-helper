@@ -1,43 +1,43 @@
-import React, { useState } from "react";
-import { useGameContext } from "../contexts/GameContext";
-import { Player } from "../interfaces";
-import { handleDoctorAction } from "../utils/actionHandlers/doctor";
-import { handleMafiosoAction } from "../utils/actionHandlers/mafioso";
-import { handleSheriffAction } from "../utils/actionHandlers/sheriff";
+import React, { useState } from 'react'
+import { useGameContext } from '../contexts/GameContext'
+import { Player } from '../interfaces'
+import { handleDoctorAction } from '../utils/actionHandlers/doctor'
+import { handleMafiosoAction } from '../utils/actionHandlers/mafioso'
+import { handleSheriffAction } from '../utils/actionHandlers/sheriff'
 import {
   filterAlivePlayers,
   filterPlayersWithNightAction,
   orderPlayersByRole,
   selectAndFilterMafiosos,
-} from "../utils/players";
-import SkipButton from "./SkipButton";
+} from '../utils/players'
+import SkipButton from './SkipButton'
 
 export default function NightActions() {
   const {
     players,
     updatePlayersByMapFn,
-    setGameState,
+    goToGameState,
     addItemToHistory,
     night,
-  } = useGameContext();
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  } = useGameContext()
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
 
-  const alivePlayers = filterAlivePlayers(players);
-  const playersWithNightActions = filterPlayersWithNightAction(alivePlayers);
-  const actingPlayers = selectAndFilterMafiosos(playersWithNightActions);
-  const orderedPlayers = orderPlayersByRole(actingPlayers);
+  const alivePlayers = filterAlivePlayers(players)
+  const playersWithNightActions = filterPlayersWithNightAction(alivePlayers)
+  const actingPlayers = selectAndFilterMafiosos(playersWithNightActions)
+  const orderedPlayers = orderPlayersByRole(actingPlayers)
 
-  const currentPlayer = orderedPlayers[currentPlayerIndex];
+  const currentPlayer = orderedPlayers[currentPlayerIndex]
 
-  if (!currentPlayer) return null;
-  const isLastPlayer = currentPlayerIndex === orderedPlayers.length - 1;
+  if (!currentPlayer) return null
+  const isLastPlayer = currentPlayerIndex === orderedPlayers.length - 1
 
   const handleNextPlayer = () => {
     if (isLastPlayer) {
-      setGameState("moderatorAnnouncement");
+      goToGameState('moderatorAnnouncement')
     }
-    setCurrentPlayerIndex(currentPlayerIndex + 1);
-  };
+    setCurrentPlayerIndex(currentPlayerIndex + 1)
+  }
 
   const handleAction = (targetId: number) => {
     const mapRoleToActionHandler: Record<
@@ -52,38 +52,38 @@ export default function NightActions() {
       Mafioso: handleMafiosoAction,
       Doctor: handleDoctorAction,
       Sheriff: handleSheriffAction,
-    };
+    }
 
-    const actionHandler = mapRoleToActionHandler[currentPlayer.role.name];
-    if (!actionHandler) return;
+    const actionHandler = mapRoleToActionHandler[currentPlayer.role.name]
+    if (!actionHandler) return
 
-    actionHandler(players, targetId, currentPlayer, updatePlayersByMapFn);
+    actionHandler(players, targetId, currentPlayer, updatePlayersByMapFn)
 
     addItemToHistory(
       `▫️ ${currentPlayer.name} (${currentPlayer.role.name}) targeted ${
         players.find((player) => player.id === targetId)?.name
       }`
-    );
+    )
 
-    handleNextPlayer();
-  };
+    handleNextPlayer()
+  }
 
   const isDisabled = (player: Player) => {
-    if (currentPlayer.role.name === "Mafioso") {
-      return player.role.faction === "Mafia";
+    if (currentPlayer.role.name === 'Mafioso') {
+      return player.role.faction === 'Mafia'
     }
 
-    if (currentPlayer.role.name === "Sheriff") {
-      return player.id === currentPlayer.id;
+    if (currentPlayer.role.name === 'Sheriff') {
+      return player.id === currentPlayer.id
     }
 
-    return false;
-  };
+    return false
+  }
 
   const alignmentIcon = (player: Player) => {
-    if (currentPlayer.role.name !== "Sheriff") return;
-    return player.role.alignment === "Good" ? "👍" : "👎";
-  };
+    if (currentPlayer.role.name !== 'Sheriff') return
+    return player.role.alignment === 'Good' ? '👍' : '👎'
+  }
 
   return (
     <div>
@@ -105,5 +105,5 @@ export default function NightActions() {
       </ul>
       <SkipButton onClick={handleNextPlayer} role={currentPlayer.role.name} />
     </div>
-  );
+  )
 }

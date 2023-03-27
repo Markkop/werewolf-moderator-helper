@@ -1,44 +1,46 @@
 // src/GameContext.ts
-import { createContext, useContext, useState } from "react";
-import { existingRoles } from "../data/existingRoles";
-import { Player, Role } from "../interfaces";
+import { createContext, useContext, useEffect, useState } from 'react'
+import { existingRoles } from '../data/existingRoles'
+import { Player, Role } from '../interfaces'
+import { executeActions } from '../utils/executeActions'
 
 interface GameContextState {
-  players: Player[];
-  addPlayer: (name: string) => void;
-  removePlayer: (playerId: number) => void;
-  updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void;
-  updatePlayer: (player: Player) => void;
-  removeActionAndStatus: () => void;
-  roles: Role[];
-  addRole: (role: Role) => void;
-  removeRole: (role: Role) => void;
-  updateRole: (role: Role) => void;
-  gameState: string;
-  setGameState: (state: string) => void;
-  gameHistory: string[];
-  addItemToHistory: (item: string) => void;
-  customRolesOrder: string[];
-  announcement: string[];
-  addItemToAnnouncement: (item: string) => void;
-  resetAnnouncement: () => void;
-  night: number;
-  goToNextNight: () => void;
+  players: Player[]
+  addPlayer: (name: string) => void
+  removePlayer: (playerId: number) => void
+  updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void
+  updatePlayer: (player: Player) => void
+  removeActionAndStatus: () => void
+  roles: Role[]
+  addRole: (role: Role) => void
+  removeRole: (role: Role) => void
+  updateRole: (role: Role) => void
+  gameState: string
+  setGameState: (state: string) => void
+  gameHistory: string[]
+  addItemToHistory: (item: string) => void
+  customRolesOrder: string[]
+  announcement: string[]
+  addItemToAnnouncement: (item: string) => void
+  resetAnnouncement: () => void
+  night: number
+  goToNextNight: () => void
+  goToGameState: (state: string) => void
 }
 
-const GameContext = createContext<GameContextState | undefined>(undefined);
+const GameContext = createContext<GameContextState | undefined>(undefined)
 
 export const useGameContext = () => {
-  const context = useContext(GameContext);
+  const context = useContext(GameContext)
   if (!context) {
-    throw new Error("useGameContext must be used within a GameProvider");
+    throw new Error('useGameContext must be used within a GameProvider')
   }
-  return context;
-};
+  return context
+}
 
 interface Props {
-  children: React.ReactNode;
-  customRolesOrder?: string[];
+  children: React.ReactNode
+  customRolesOrder?: string[]
 }
 
 export const GameProvider: React.FC<Props> = ({
@@ -52,63 +54,73 @@ export const GameProvider: React.FC<Props> = ({
       name: `Player ${i + 1}`,
       isDead: false,
     })
-  );
+  )
 
-  const [players, setPlayers] = useState<Player[]>(defaultPlayers);
+  const [players, setPlayers] = useState<Player[]>(defaultPlayers)
   const defaultRoles = customRolesOrder?.length
     ? customRolesOrder.map((roleName) => {
-        const role = existingRoles.find((role) => role.name === roleName);
+        const role = existingRoles.find((role) => role.name === roleName)
         if (!role) {
-          throw new Error(`Role ${roleName} not found`);
+          throw new Error(`Role ${roleName} not found`)
         }
-        return role;
+        return role
       })
-    : [existingRoles[0], ...existingRoles];
+    : [existingRoles[0], ...existingRoles]
 
-  const [roles, setRoles] = useState<Role[]>(defaultRoles);
-  const [gameState, setGameState] = useState("idle");
-  const [gameHistory, setGameHistory] = useState([]);
-  const [night, setNight] = useState(0);
-  const [announcement, setAnnouncement] = useState([]);
+  const [roles, setRoles] = useState<Role[]>(defaultRoles)
+  const [gameState, setGameState] = useState('idle')
+  const [gameHistory, setGameHistory] = useState([])
+  const [night, setNight] = useState(0)
+  const [announcement, setAnnouncement] = useState([])
+
+  useEffect(() => {
+    if (gameState === 'moderatorAnnouncement') {
+      executeActions(players, addItemToHistory, addItemToAnnouncement)
+    }
+  }, [gameState])
+
+  const goToGameState = (state: string) => {
+    setGameState(state)
+  }
 
   const addPlayer = (name: string) => {
     const newPlayer: Player = {
       id: Date.now(),
       name,
       isDead: false,
-    };
-    setPlayers([...players, newPlayer]);
-  };
+    }
+    setPlayers([...players, newPlayer])
+  }
 
   const removePlayer = (playerId: number) => {
-    setPlayers(players.filter((player) => player.id !== playerId));
-  };
+    setPlayers(players.filter((player) => player.id !== playerId))
+  }
 
   const updatePlayer = (updatedPlayer: Player) => {
     setPlayers(
       players.map((player) =>
         player.id === updatedPlayer.id ? updatedPlayer : player
       )
-    );
-  };
+    )
+  }
 
   const updatePlayersByMapFn = (mapFn: (player: Player) => Player) => {
-    setPlayers(players.map(mapFn));
-  };
+    setPlayers(players.map(mapFn))
+  }
 
   const addRole = (role: Role) => {
-    setRoles([...roles, role]);
-  };
+    setRoles([...roles, role])
+  }
 
   const removeRole = (roleToRemove: Role) => {
-    setRoles(roles.filter((role) => role.name !== roleToRemove.name));
-  };
+    setRoles(roles.filter((role) => role.name !== roleToRemove.name))
+  }
 
   const updateRole = (updatedRole: Role) => {
     setRoles(
       roles.map((role) => (role.name === updatedRole.name ? updatedRole : role))
-    );
-  };
+    )
+  }
 
   const removeActionAndStatus = () => {
     setPlayers(
@@ -116,24 +128,24 @@ export const GameProvider: React.FC<Props> = ({
         ...player,
         turn: undefined,
       }))
-    );
-  };
+    )
+  }
 
   const addItemToHistory = (item: string) => {
-    setGameHistory((prevItems) => [...prevItems, item]);
-  };
+    setGameHistory((prevItems) => [...prevItems, item])
+  }
 
   const goToNextNight = () => {
-    setNight((prevNight) => prevNight + 1);
-  };
+    setNight((prevNight) => prevNight + 1)
+  }
 
   const addItemToAnnouncement = (item: string) => {
-    setAnnouncement((prevItems) => [...prevItems, item]);
-  };
+    setAnnouncement((prevItems) => [...prevItems, item])
+  }
 
   const resetAnnouncement = () => {
-    setAnnouncement([]);
-  };
+    setAnnouncement([])
+  }
 
   return (
     <GameContext.Provider
@@ -158,9 +170,10 @@ export const GameProvider: React.FC<Props> = ({
         resetAnnouncement,
         night,
         goToNextNight,
+        goToGameState,
       }}
     >
       {children}
     </GameContext.Provider>
-  );
-};
+  )
+}
