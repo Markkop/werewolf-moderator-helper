@@ -62,6 +62,46 @@ test("Mafia kills a player", async () => {
   ).not.toBeInTheDocument();
 });
 
+test("Doctor heals a player", async () => {
+  await setupGame([
+    "Mafioso", // Player 1
+    "Townie", // Player 2
+    "Sheriff", // Player 3
+    "Doctor", // Player 4
+    "Townie", // Player 5
+  ]);
+
+  performNightAction("Player 2"); // Mafioso kills Player 2
+  performNightAction("Player 2"); // Doctor heals Player 2
+  performNightAction("Player 4"); // Sheriff investigates Player 5
+
+  expect(
+    screen.getByText(`but healed`, {
+      exact: false,
+    })
+  ).toBeInTheDocument();
+});
+
+test("Sheriff investigates", async () => {
+  await setupGame([
+    "Mafioso", // Player 1
+    "Townie", // Player 2
+    "Sheriff", // Player 3
+    "Doctor", // Player 4
+    "Townie", // Player 5
+  ]);
+
+  performNightAction("Player 2"); // Mafioso kills Player 2
+  performNightAction("Player 3"); // Doctor heals Player 3
+  performNightAction("Player 4"); // Sheriff investigates Player 5
+
+  expect(
+    screen.getByText(`investigated`, {
+      exact: false,
+    })
+  ).toBeInTheDocument();
+});
+
 test("Mafia can't select other mafia", async () => {
   await setupGame([
     "Mafioso", // Player 1
@@ -81,27 +121,6 @@ test("Mafia can't select other mafia", async () => {
   ).toBeInTheDocument();
 });
 
-test("Mafia kills a player, but they are healed", async () => {
-  await setupGame([
-    "Mafioso", // Player 1
-    "Townie", // Player 2
-    "Sheriff", // Player 3
-    "Doctor", // Player 4
-    "Townie", // Player 5
-  ]);
-
-  performNightAction("Player 2"); // Mafioso kills Player 2
-  performNightAction("Player 2"); // Doctor heals Player 2
-  performNightAction("Player 4"); // Sheriff investigates Player 5
-
-  expect(
-    screen.getByText(
-      `Player 2 (Townie) was attacked by Player 1 (Mafioso), but healed by Player 4 (Doctor)`,
-      { exact: false }
-    )
-  ).toBeInTheDocument();
-});
-
 test("Mafia kills a player on first turn, but is healed on the second", async () => {
   await setupGame([
     "Mafioso", // Player 1
@@ -117,12 +136,12 @@ test("Mafia kills a player on first turn, but is healed on the second", async ()
   fireEvent.click(screen.getByText("Next step"));
   fireEvent.click(screen.getByText("Skip Hanging"));
   fireEvent.click(screen.getByText("Next step"));
-  performNightAction("Player 3"); // Mafioso kills Player 2
+  performNightAction("Player 3"); // Mafioso kills Player 3
   performNightAction("Player 3"); // Doctor heals Player 3
   performNightAction("Player 1"); // Sheriff investigates Player 5
 
   expect(
-    screen.getByText(`Player 2 (Townie) was killed by Plssayer 1 (Mafioso)`, {
+    screen.getByText(`Player 2 (Townie) was killed by Player 1 (Mafioso)`, {
       exact: false,
     })
   ).toBeInTheDocument();

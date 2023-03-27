@@ -61,20 +61,20 @@ export function getPlayersByActionType(players: Player[], actionInitiator: Actio
 export function updatePlayersFromAction(
   players: Player[],
   currentPlayer: Player,
-  updatePlayer: (player: Player) => void,
+  updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void,
   targetId: number,
   action: Action
 ) {
-  updatePlayer({
+  const updatedPlayer = {
     ...currentPlayer,
     turn: {
       ...currentPlayer.turn,
       target: { action, targetId },
     }
-  });
+  };
 
   const targettedPlayer = players.find((player) => player.id === targetId);
-  updatePlayer({
+  const updatedTargettedPlayer = {
     ...targettedPlayer,
     turn: {
       ...targettedPlayer?.turn,
@@ -83,5 +83,16 @@ export function updatePlayersFromAction(
         { action, initiatorId: currentPlayer.id }
       ]
     }
-  });
+  };
+
+  updatePlayersByMapFn((player) => {
+    if (player.id === currentPlayer.id) {
+      return updatedPlayer;
+    } else if (player.id === targetId) {
+      return updatedTargettedPlayer;
+    } else {
+      return player;
+    }
+  }
+  );
 }

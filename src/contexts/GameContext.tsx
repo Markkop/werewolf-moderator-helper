@@ -7,6 +7,7 @@ interface GameContextState {
   players: Player[];
   addPlayer: (name: string) => void;
   removePlayer: (playerId: number) => void;
+  updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void;
   updatePlayer: (player: Player) => void;
   removeActionAndStatus: () => void;
   roles: Role[];
@@ -91,6 +92,10 @@ export const GameProvider: React.FC<Props> = ({
     );
   };
 
+  const updatePlayersByMapFn = (mapFn: (player: Player) => Player) => {
+    setPlayers(players.map(mapFn));
+  };
+
   const addRole = (role: Role) => {
     setRoles([...roles, role]);
   };
@@ -137,6 +142,7 @@ export const GameProvider: React.FC<Props> = ({
         addPlayer,
         removePlayer,
         updatePlayer,
+        updatePlayersByMapFn,
         removeActionAndStatus,
         roles,
         addRole,

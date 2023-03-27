@@ -5,7 +5,8 @@ import { getPlayersByActionType } from "./players";
 export function executeActions(players: Player[], addItemToHistory: (item: string) => void, addItemToAnnouncement: (item: string) => void) {
   // Resolve killing and healing actions
   players.forEach((player) => {
-    const targettedBy = player.turn?.targettedBy || [];
+    const targettedBy = player.turn?.targettedBy
+    if (!targettedBy?.length) return;
     const healers = getPlayersByActionType(players, targettedBy, "heal");
     const killers = getPlayersByActionType(players, targettedBy, "kill");
 
@@ -42,21 +43,37 @@ export function executeActions(players: Player[], addItemToHistory: (item: strin
 
   // Resolve investigation actions
   players.forEach((player) => {
-    if (player.role.name !== "Sheriff") return
-    const target = players.find((otherPlayer) => otherPlayer.id === player.turn?.target?.targetId);
-    if (!target) return;
-
-    const playerTag = getPlayerTag(player);
-    if (target?.role.alignment === "Good") {
-      addItemToHistory(
-        `🔎 ${playerTag} investigated ${getPlayerTag(target)} and found them to be 👍`
-      )
-    } else {
-      addItemToHistory(
-        `🔎 ${playerTag} investigated ${getPlayerTag(target)} and found them to be 👎`
-      )
-    }
+    const targettedBy = player.turn?.targettedBy
+    if (!targettedBy?.length) return;
+    const investigators = getPlayersByActionType(players, targettedBy, "investigate");
+    investigators.forEach((investigator) => {
+      const investigatorTag = getPlayerTag(investigator);
+      const playerTag = getPlayerTag(player);
+      if (player.role.alignment === "Good") {
+        addItemToHistory(
+          `🔎 ${investigatorTag} investigated ${playerTag} and found them to be 👍`
+        )
+      } else {
+        addItemToHistory(
+          `🔎 ${investigatorTag} investigated ${playerTag} and found them to be 👎`
+        )
+      }
+    })
   })
+
+  //   if (!target) return;
+
+  //   const playerTag = getPlayerTag(player);
+  //   if (target?.role.alignment === "Good") {
+  //     addItemToHistory(
+  //       `🔎 ${playerTag} investigated ${getPlayerTag(target)} and found them to be 👍`
+  //     )
+  //   } else {
+  //     addItemToHistory(
+  //       `🔎 ${playerTag} investigated ${getPlayerTag(target)} and found them to be 👎`
+  //     )
+  //   }
+  // })
 
   return players;
 }

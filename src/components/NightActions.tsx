@@ -4,7 +4,6 @@ import { Player } from "../interfaces";
 import { handleDoctorAction } from "../utils/actionHandlers/doctor";
 import { handleMafiosoAction } from "../utils/actionHandlers/mafioso";
 import { handleSheriffAction } from "../utils/actionHandlers/sheriff";
-import { executeActions } from "../utils/executeActions";
 import {
   filterAlivePlayers,
   filterPlayersWithNightAction,
@@ -16,12 +15,10 @@ import SkipButton from "./SkipButton";
 export default function NightActions() {
   const {
     players,
-    updatePlayer,
-    removeActionAndStatus,
+    updatePlayersByMapFn,
     setGameState,
     addItemToHistory,
     night,
-    addItemToAnnouncement,
   } = useGameContext();
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
@@ -35,15 +32,8 @@ export default function NightActions() {
   if (!currentPlayer) return null;
   const isLastPlayer = currentPlayerIndex === orderedPlayers.length - 1;
 
-  function handlefinishNightActionsHandler() {
-    executeActions(players, addItemToHistory, addItemToAnnouncement);
-
-    removeActionAndStatus();
-  }
-
   const handleNextPlayer = () => {
     if (isLastPlayer) {
-      handlefinishNightActionsHandler();
       setGameState("moderatorAnnouncement");
     }
     setCurrentPlayerIndex(currentPlayerIndex + 1);
@@ -56,7 +46,7 @@ export default function NightActions() {
         players: Player[],
         targetId: number,
         currentPlayer: Player,
-        updatePlayer: (player: Player) => void
+        updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void
       ) => void
     > = {
       Mafioso: handleMafiosoAction,
@@ -65,7 +55,9 @@ export default function NightActions() {
     };
 
     const actionHandler = mapRoleToActionHandler[currentPlayer.role.name];
-    actionHandler(players, targetId, currentPlayer, updatePlayer);
+    if (!actionHandler) return;
+
+    actionHandler(players, targetId, currentPlayer, updatePlayersByMapFn);
 
     addItemToHistory(
       `▫️ ${currentPlayer.name} (${currentPlayer.role.name}) targeted ${

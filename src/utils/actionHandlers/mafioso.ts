@@ -5,7 +5,7 @@ export function handleMafiosoAction(
   players: Player[],
   targetId: number,
   currentPlayer: Player,
-  updatePlayer: (player: Player) => void) {
+  updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void) {
   const alivePlayers = filterAlivePlayers(players);
   const mafiaMembers = getPlayersByFaction(alivePlayers, "Mafia");
 
@@ -13,5 +13,5 @@ export function handleMafiosoAction(
     return;
   }
 
-  updatePlayersFromAction(players, currentPlayer, updatePlayer, targetId, "kill");
+  updatePlayersFromAction(players, currentPlayer, updatePlayersByMapFn, targetId, "kill");
 };
