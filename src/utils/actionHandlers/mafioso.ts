@@ -1,7 +1,11 @@
-import { Player, RoleAction } from "../../interfaces";
-import { filterAlivePlayers, getPlayersByFaction } from "../players";
+import { Player, ActionTarget } from "../../interfaces";
+import { filterAlivePlayers, getPlayersByFaction, updatePlayersFromAction } from "../players";
 
-export function handleMafiosoAction(players: Player[], targetId: number): RoleAction {
+export function handleMafiosoAction(
+  players: Player[],
+  targetId: number,
+  currentPlayer: Player,
+  updatePlayer: (player: Player) => void) {
   const alivePlayers = filterAlivePlayers(players);
   const mafiaMembers = getPlayersByFaction(alivePlayers, "Mafia");
 
@@ -9,5 +13,5 @@ export function handleMafiosoAction(players: Player[], targetId: number): RoleAc
     return;
   }
 
-  return { type: "kill", targetId }
+  updatePlayersFromAction(players, currentPlayer, updatePlayer, targetId, "kill");
 };

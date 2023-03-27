@@ -1,5 +1,5 @@
 import { roleOrder } from "../data/existingRoles";
-import { Faction, Player } from "../interfaces";
+import { Action, ActionInitiator, Faction, Player } from "../interfaces";
 
 export function filterAlivePlayers(players: Player[]) {
   return players.filter((player) => !player.isDead);
@@ -53,18 +53,35 @@ export function getPlayersByAlignment(players: Player[], alignment: string) {
   return players.filter((player) => player.role.alignment === alignment);
 }
 
-export function getPlayersByActionType(players: Player[], actionType: string) {
-  return players.filter((player) => player.role.action?.type === actionType);
+export function getPlayersByActionType(players: Player[], actionInitiator: ActionInitiator[], actionType: string) {
+  const initiators = actionInitiator.filter((action) => action.action === actionType);
+  return players.filter((player) => initiators.some((initiator) => initiator.initiatorId === player.id));
 }
 
-export function setStatusForPlayers(players: Player[], statusKey: string, actionPlayers: Player[]) {
-  players.forEach((player) => {
-    const matchingPlayer = actionPlayers.find((actionPlayer) => actionPlayer.role.action?.targetId === player.id);
-    if (matchingPlayer && player.status) {
-      player.status = {
-        ...player.status,
-        [statusKey]: matchingPlayer,
-      };
+export function updatePlayersFromAction(
+  players: Player[],
+  currentPlayer: Player,
+  updatePlayer: (player: Player) => void,
+  targetId: number,
+  action: Action
+) {
+  updatePlayer({
+    ...currentPlayer,
+    turn: {
+      ...currentPlayer.turn,
+      target: { action, targetId },
+    }
+  });
+
+  const targettedPlayer = players.find((player) => player.id === targetId);
+  updatePlayer({
+    ...targettedPlayer,
+    turn: {
+      ...targettedPlayer?.turn,
+      targettedBy: [
+        ...(targettedPlayer?.turn?.targettedBy || []),
+        { action, initiatorId: currentPlayer.id }
+      ]
     }
   });
 }

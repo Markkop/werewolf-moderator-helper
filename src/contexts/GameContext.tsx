@@ -8,6 +8,7 @@ interface GameContextState {
   addPlayer: (name: string) => void;
   removePlayer: (playerId: number) => void;
   updatePlayer: (player: Player) => void;
+  removeActionAndStatus: () => void;
   roles: Role[];
   addRole: (role: Role) => void;
   removeRole: (role: Role) => void;
@@ -68,7 +69,7 @@ export const GameProvider: React.FC<Props> = ({
   const [gameState, setGameState] = useState("idle");
   const [gameHistory, setGameHistory] = useState([]);
   const [night, setNight] = useState(0);
-  const [announcement, setNightAnnouncement] = useState([]);
+  const [announcement, setAnnouncement] = useState([]);
 
   const addPlayer = (name: string) => {
     const newPlayer: Player = {
@@ -105,6 +106,19 @@ export const GameProvider: React.FC<Props> = ({
     );
   };
 
+  const removeActionAndStatus = () => {
+    setPlayers(
+      players.map((player) => ({
+        ...player,
+        status: undefined,
+        role: {
+          ...player.role,
+          action: undefined,
+        },
+      }))
+    );
+  };
+
   const addItemToHistory = (item: string) => {
     setGameHistory((prevItems) => [...prevItems, item]);
   };
@@ -114,11 +128,11 @@ export const GameProvider: React.FC<Props> = ({
   };
 
   const addItemToAnnouncement = (item: string) => {
-    setNightAnnouncement((prevItems) => [...prevItems, item]);
+    setAnnouncement((prevItems) => [...prevItems, item]);
   };
 
   const resetAnnouncement = () => {
-    setNightAnnouncement([]);
+    setAnnouncement([]);
   };
 
   return (
@@ -128,6 +142,7 @@ export const GameProvider: React.FC<Props> = ({
         addPlayer,
         removePlayer,
         updatePlayer,
+        removeActionAndStatus,
         roles,
         addRole,
         removeRole,

@@ -9,9 +9,9 @@ export default function SleepStep() {
   const nextNight = night + 1;
 
   const handleNextStep = () => {
+    goToNextNight();
     addItemToHistory(`🌑 Night #${nextNight}`);
     setGameState("night");
-    goToNextNight();
   };
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function SleepStep() {
   return (
     <div>
       <h2>Sleep Step</h2>
-      <h3>Time until {nextNight}</h3>
+      <h3>Time until Night #{nextNight}</h3>
       <p>
         {" ⏳ "}
         {`${seconds}s`}

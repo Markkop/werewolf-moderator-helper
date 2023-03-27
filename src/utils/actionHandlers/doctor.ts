@@ -1,5 +1,10 @@
-import { Player, RoleAction } from "../../interfaces";
+import { Player, ActionTarget } from "../../interfaces";
+import { updatePlayersFromAction } from "../players";
 
-export function handleDoctorAction(players: Player[], targetId: number): RoleAction {
-  return { type: "heal", targetId };
+export function handleDoctorAction(
+  players: Player[],
+  targetId: number,
+  currentPlayer: Player,
+  updatePlayer: (player: Player) => void) {
+  updatePlayersFromAction(players, currentPlayer, updatePlayer, targetId, "heal");
 };

@@ -1,19 +1,29 @@
 import React, { useState } from "react";
 import { useGameContext } from "../contexts/GameContext";
-import { Player, RoleAction } from "../interfaces";
+import { Player } from "../interfaces";
 import { handleDoctorAction } from "../utils/actionHandlers/doctor";
 import { handleMafiosoAction } from "../utils/actionHandlers/mafioso";
 import { handleSheriffAction } from "../utils/actionHandlers/sheriff";
+import { executeActions } from "../utils/executeActions";
 import {
   filterAlivePlayers,
   filterPlayersWithNightAction,
   orderPlayersByRole,
   selectAndFilterMafiosos,
 } from "../utils/players";
+import SkipButton from "./SkipButton";
 
 export default function NightActions() {
-  const { players, updatePlayer, setGameState, addItemToHistory, night } =
-    useGameContext();
+  const {
+    players,
+    updatePlayer,
+    removeActionAndStatus,
+    setGameState,
+    addItemToHistory,
+    night,
+    announcement,
+    addItemToAnnouncement,
+  } = useGameContext();
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
   const alivePlayers = filterAlivePlayers(players);
@@ -23,14 +33,40 @@ export default function NightActions() {
 
   const currentPlayer = orderedPlayers[currentPlayerIndex];
 
+  if (!currentPlayer) return null;
+  const isLastPlayer = currentPlayerIndex === orderedPlayers.length - 1;
+
+  function handlefinishNightActionsHandler() {
+    executeActions(players, addItemToHistory, addItemToAnnouncement);
+
+    removeActionAndStatus();
+
+    if (announcement.length === 0) {
+      addItemToAnnouncement("Nothing happened during the night.");
+    }
+
+    announcement.forEach((item) => {
+      addItemToHistory(`📢 ${item}`);
+    });
+  }
+
   const handleNextPlayer = () => {
+    if (isLastPlayer) {
+      handlefinishNightActionsHandler();
+      setGameState("moderatorAnnouncement");
+    }
     setCurrentPlayerIndex(currentPlayerIndex + 1);
   };
 
   const handleAction = (targetId: number) => {
     const mapRoleToActionHandler: Record<
       string,
-      (players: Player[], targetId: number) => RoleAction
+      (
+        players: Player[],
+        targetId: number,
+        currentPlayer: Player,
+        updatePlayer: (player: Player) => void
+      ) => void
     > = {
       Mafioso: handleMafiosoAction,
       Doctor: handleDoctorAction,
@@ -38,21 +74,15 @@ export default function NightActions() {
     };
 
     const actionHandler = mapRoleToActionHandler[currentPlayer.role.name];
-    const action = actionHandler(players, targetId);
+    actionHandler(players, targetId, currentPlayer, updatePlayer);
 
     addItemToHistory(
-      `${currentPlayer.name} (${currentPlayer.role.name}) selected ${
+      `▫️ ${currentPlayer.name} (${currentPlayer.role.name}) targeted ${
         players.find((player) => player.id === targetId)?.name
       }`
     );
-    currentPlayer.role.action = action;
-    updatePlayer(currentPlayer);
 
-    if (currentPlayerIndex === orderedPlayers.length - 1) {
-      setGameState("moderatorAnnouncement");
-    } else {
-      handleNextPlayer();
-    }
+    handleNextPlayer();
   };
 
   const isDisabled = (player: Player) => {
@@ -90,7 +120,7 @@ export default function NightActions() {
           </li>
         ))}
       </ul>
-      <button onClick={handleNextPlayer}>Skip</button>
+      <SkipButton onClick={handleNextPlayer} role={currentPlayer.role.name} />
     </div>
   );
 }

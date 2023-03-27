@@ -51,11 +51,13 @@ test("Mafia kills a player", async () => {
   performNightAction("Player 4"); // Sheriff investigates Player 5
 
   await waitFor(() => {
-    expect(screen.getByText("Moderator Announcement")).toBeInTheDocument();
+    expect(
+      screen.getByText("Moderator Announcement", { exact: false })
+    ).toBeInTheDocument();
   });
 
   expect(
-    screen.getByText(`Player 2 (Townie) was kiled by Player 1 (Mafioso)`, {
+    screen.getByText(`Player 2 (Townie) was killed by Player 1 (Mafioso)`, {
       exact: false,
     })
   ).toBeInTheDocument();
@@ -80,7 +82,7 @@ test("Mafia can't select other mafia", async () => {
   ).toBeInTheDocument();
 });
 
-test("Mafia kills a player", async () => {
+test("Mafia kills a player, but they are healed", async () => {
   await setupGame([
     "Mafioso", // Player 1
     "Townie", // Player 2
@@ -93,13 +95,10 @@ test("Mafia kills a player", async () => {
   performNightAction("Player 2"); // Doctor heals Player 2
   performNightAction("Player 4"); // Sheriff investigates Player 5
 
-  await waitFor(() => {
-    expect(screen.getByText("Moderator Announcement")).toBeInTheDocument();
-  });
-
   expect(
     screen.getByText(
-      `Player 2 (Townie) was attacked by Player 1 (Mafioso), but healed by Player 4 (Doctor)`
+      `Player 2 (Townie) was attacked by Player 1 (Mafioso), but healed by Player 4 (Doctor)`,
+      { exact: false }
     )
   ).toBeInTheDocument();
 });

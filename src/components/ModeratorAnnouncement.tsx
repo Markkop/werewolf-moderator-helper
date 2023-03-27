@@ -1,42 +1,23 @@
-import React, { useEffect } from "react";
 import { useGameContext } from "../contexts/GameContext";
-import { finishNightActionsHandler } from "../utils/finishNightActionsHandler";
 
 export default function ModeratorAnnouncement() {
   const {
+    night,
     setGameState,
     announcement,
     addItemToHistory,
-    addItemToAnnouncement,
-    players,
-    updatePlayer,
+    resetAnnouncement,
   } = useGameContext();
 
-  useEffect(() => {
-    handleFinishNightActions();
-  }, []);
-
-  const handleFinishNightActions = () => {
-    const afterNightPlayers = finishNightActionsHandler(
-      players,
-      addItemToHistory,
-      addItemToAnnouncement
-    );
-
-    afterNightPlayers.forEach((player) => {
-      if (player.role.action) delete player.role.action;
-      if (player?.status) delete player?.status;
-      updatePlayer(player);
-    });
-  };
-
   const handleNextStep = () => {
+    resetAnnouncement();
+    addItemToHistory(`☀️ Day #${night}`);
     setGameState("trial");
   };
 
   return (
     <div>
-      <h2>Moderator Announcement</h2>
+      <h2>📢 Moderator Announcement</h2>
       <div>
         {announcement.map((text, index) => {
           return <div key={index}>{text}</div>;

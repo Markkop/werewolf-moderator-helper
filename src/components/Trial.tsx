@@ -25,7 +25,7 @@ export default function HangingStep() {
       if (playerToHang) {
         const playerTag = getPlayerTag(playerToHang);
         playerToHang.isDead = true;
-        addItemToHistory(`☠️ ${playerTag} was hanged`);
+        addItemToHistory(`📢 ${playerTag} was hanged`);
         updatePlayer(playerToHang);
       }
     }
@@ -70,8 +70,8 @@ export default function HangingStep() {
       </button>
       <button
         onClick={() => {
-          addItemToHistory("No player was selected to hang");
-          setGameState("night");
+          addItemToHistory("📢 No one was hanged");
+          setGameState("sleep");
         }}
       >
         Skip Hanging

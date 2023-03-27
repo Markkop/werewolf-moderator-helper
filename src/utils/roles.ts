@@ -36,6 +36,6 @@ export function assignRolesToPlayers(
   for (let i = 0; i < players.length; i++) {
     players[i].role = shuffledRoles[i];
     updatePlayer(players[i]);
-    addItemToHistory(`${players[i].name} is ${players[i].role.name}`);
+    addItemToHistory(`▫️ ${players[i].name} is ${players[i].role.name}`);
   }
 }

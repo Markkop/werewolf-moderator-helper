@@ -25,14 +25,16 @@ const Game: React.FC = () => {
   return (
     <div>
       <div>{renderGameState()}</div>
-      <div>
-        <h2>Game History</h2>
-        <ul>
-          {gameHistory.map((historyItem, index) => (
-            <li key={index}>{historyItem}</li>
-          ))}
-        </ul>
-      </div>
+      {gameHistory.length > 0 && (
+        <div>
+          <h2>Game History</h2>
+          <ul>
+            {gameHistory.map((historyItem, index) => (
+              <li key={index}>{historyItem}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,20 +1,25 @@
-
+export type PlayerTurn = {
+  target?: ActionTarget;
+  targettedBy?: ActionInitiator[]
+}
 export interface Player {
   id: number;
   name: string;
   isDead: boolean;
   role?: Role;
-  status?: {
-    killer?: Player;
-    healer?: Player;
-  };
+  turn?: PlayerTurn
 }
 
-export type RoleActionType = 'heal' | 'investigate' | 'kill';
+export type Action = 'heal' | 'investigate' | 'kill';
 
-export type RoleAction = {
-  type: RoleActionType
+export type ActionTarget = {
+  action: Action
   targetId: number;
+};
+
+export type ActionInitiator = {
+  action: Action
+  initiatorId: number;
 };
 
 export interface Role {
@@ -22,7 +27,6 @@ export interface Role {
   description: string;
   alignment: string;
   points: string;
-  action?: RoleAction;
   faction: Faction,
   hasNightAction: boolean
 }
