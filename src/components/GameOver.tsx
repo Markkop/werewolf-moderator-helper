@@ -1,10 +1,10 @@
 import { useGameContext } from '../contexts/GameContext'
 
 export default function GameOver() {
-  const { goToGameState, gameHistory } = useGameContext()
+  const { gameHistory, resetGame } = useGameContext()
 
   const handleNextStep = () => {
-    goToGameState('setupPlayers')
+    resetGame()
   }
 
   return (

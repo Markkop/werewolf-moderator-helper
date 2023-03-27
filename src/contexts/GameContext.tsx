@@ -28,6 +28,8 @@ interface GameContextState {
   goToNextNight: () => void
   goToGameState: (state: string) => void
   checkGameOver: (players: Player[]) => void
+  clearHistory: () => void
+  resetGame: () => void
 }
 
 const GameContext = createContext<GameContextState | undefined>(undefined)
@@ -83,23 +85,31 @@ export const GameProvider: React.FC<Props> = ({
         addItemToAnnouncement
       )
       setPlayers(playersAfterNight)
-      checkGameOver(playersAfterNight)
-    }
-
-    if (gameState === 'sleep') {
-      checkGameOver(players)
     }
   }, [gameState])
 
   const checkGameOver = (playersParam: Player[]) => {
     const winnerFaction = isGameOver(playersParam || players)
     if (winnerFaction) {
-      setGameState('gameOver')
       addItemToHistory(`🏁 Game over! ${winnerFaction} won!`)
+      return true
     }
+    return false
+  }
+
+  const resetGame = () => {
+    setPlayers(defaultPlayers)
+    setGameHistory([])
+    setNight(0)
+    setAnnouncement([])
+    setGameState('setupRoles')
   }
 
   const goToGameState = (state: string) => {
+    if (night > 0 && checkGameOver(players)) {
+      setGameState('gameOver')
+      return
+    }
     setGameState(state)
   }
 
@@ -155,6 +165,10 @@ export const GameProvider: React.FC<Props> = ({
     setGameHistory((prevItems) => [...prevItems, item])
   }
 
+  const clearHistory = () => {
+    setGameHistory([])
+  }
+
   const goToNextNight = () => {
     setNight((prevNight) => prevNight + 1)
   }
@@ -165,14 +179,6 @@ export const GameProvider: React.FC<Props> = ({
 
   const resetAnnouncement = () => {
     setAnnouncement([])
-  }
-
-  const killPlayer = (playerId: number) => {
-    setPlayers(
-      players.map((player) =>
-        player.id === playerId ? { ...player, isDead: true } : player
-      )
-    )
   }
 
   return (
@@ -200,6 +206,8 @@ export const GameProvider: React.FC<Props> = ({
         goToNextNight,
         goToGameState,
         checkGameOver,
+        clearHistory,
+        resetGame,
       }}
     >
       {children}

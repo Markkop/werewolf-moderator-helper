@@ -6,6 +6,7 @@ import SetupRoles from '../components/SetupRoles'
 import Sleep from '../components/Sleep'
 import GameOver from '../components/GameOver'
 import { useGameContext } from '../contexts/GameContext'
+import GameHistory from '../components/GameHistory'
 
 const Game: React.FC = () => {
   const { gameState, gameHistory } = useGameContext()
@@ -27,16 +28,7 @@ const Game: React.FC = () => {
   return (
     <div>
       <div>{renderGameState()}</div>
-      {gameHistory.length > 0 && (
-        <div>
-          <h2>Game History</h2>
-          <ul>
-            {gameHistory.map((historyItem, index) => (
-              <li key={index}>{historyItem}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {gameHistory.length > 0 && <GameHistory />}
     </div>
   )
 }

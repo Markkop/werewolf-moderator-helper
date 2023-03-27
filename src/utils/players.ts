@@ -15,7 +15,7 @@ export function getPlayersByRole(players: Player[], role: string) {
 }
 
 export function getPlayersByFaction(players: Player[], faction: Faction) {
-  return players.filter((player) => player.role.faction === faction)
+  return players.filter((player) => player.role?.faction === faction)
 }
 
 export function getPlayersByAlignment(players: Player[], alignment: string) {

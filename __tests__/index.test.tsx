@@ -216,16 +216,16 @@ test('A game ends with Mafia winning', async () => {
   // Night 3
   clickOnButton('Player 4') // Mafioso kills Player 4
   clickOnButton("Don't") // Doctor skips heal
-
   fireEvent.click(screen.getByText('Next step'))
+
   expect(
-    screen.getByText(`Game over! Mafia won!`, {
+    screen.getAllByText(`Game over! Mafia won!`, {
       exact: false,
-    })
+    })[0]
   ).toBeInTheDocument()
 })
 
-test('A game ends with Town winning', async () => {
+test('A game ends with Town winning by hanging the Mafioso', async () => {
   await setupGame([
     'Mafioso', // Player 1
     'Townie', // Player 2
@@ -242,10 +242,34 @@ test('A game ends with Town winning', async () => {
   fireEvent.click(screen.getByText('Next step'))
   clickOnButton('Player 1') // Town votes to hang Player 1
   clickOnButton('Hang selected player') // Town hangs Player 1
-  fireEvent.click(screen.getByText('Next step'))
   expect(
-    screen.getByText(`Game over! Town won!`, {
+    screen.getAllByText(`Game over! Town won!`, {
       exact: false,
-    })
+    })[0]
   ).toBeInTheDocument()
+})
+
+test('Two games are played consecutively', async () => {
+  await setupGame([
+    'Mafioso', // Player 1
+    'Townie', // Player 2
+    'Sheriff', // Player 3
+    'Doctor', // Player 4
+    'Townie', // Player 5
+  ])
+
+  // Night 1
+  clickOnButton("Don't") // Mafioso skips kill
+  clickOnButton("Don't") // Doctor skips heal
+  clickOnButton("Don't") // Sheriff skips investigate
+
+  fireEvent.click(screen.getByText('Next step'))
+  clickOnButton('Player 1') // Town votes to hang Player 1
+  clickOnButton('Hang selected player') // Town hangs Player 1
+  expect(
+    screen.getAllByText(`Game over! Town won!`, {
+      exact: false,
+    })[0]
+  ).toBeInTheDocument()
+  fireEvent.click(screen.getByText('Start again'))
 })
