@@ -1,4 +1,4 @@
-import { Player, ActionTarget } from "../../interfaces";
+import { Player } from "../../interfaces";
 import { updatePlayersFromAction } from "../players";
 
 export function handleDoctorAction(

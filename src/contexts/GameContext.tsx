@@ -50,7 +50,6 @@ export const GameProvider: React.FC<Props> = ({
       id: i,
       name: `Player ${i + 1}`,
       isDead: false,
-      status: {},
     })
   );
 
@@ -110,11 +109,7 @@ export const GameProvider: React.FC<Props> = ({
     setPlayers(
       players.map((player) => ({
         ...player,
-        status: undefined,
-        role: {
-          ...player.role,
-          action: undefined,
-        },
+        turn: undefined,
       }))
     );
   };

@@ -21,7 +21,6 @@ export default function NightActions() {
     setGameState,
     addItemToHistory,
     night,
-    announcement,
     addItemToAnnouncement,
   } = useGameContext();
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
@@ -40,14 +39,6 @@ export default function NightActions() {
     executeActions(players, addItemToHistory, addItemToAnnouncement);
 
     removeActionAndStatus();
-
-    if (announcement.length === 0) {
-      addItemToAnnouncement("Nothing happened during the night.");
-    }
-
-    announcement.forEach((item) => {
-      addItemToHistory(`📢 ${item}`);
-    });
   }
 
   const handleNextPlayer = () => {

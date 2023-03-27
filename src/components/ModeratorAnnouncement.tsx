@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useGameContext } from "../contexts/GameContext";
 
 export default function ModeratorAnnouncement() {
@@ -7,6 +8,7 @@ export default function ModeratorAnnouncement() {
     announcement,
     addItemToHistory,
     resetAnnouncement,
+    addItemToAnnouncement,
   } = useGameContext();
 
   const handleNextStep = () => {
@@ -14,6 +16,16 @@ export default function ModeratorAnnouncement() {
     addItemToHistory(`☀️ Day #${night}`);
     setGameState("trial");
   };
+
+  useEffect(() => {
+    if (announcement.length === 0) {
+      addItemToAnnouncement("Nothing happened during the night.");
+    }
+
+    announcement.forEach((item) => {
+      addItemToHistory(`📢 ${item}`);
+    });
+  }, []);
 
   return (
     <div>
