@@ -16,7 +16,7 @@ const setupGame = async (customRolesOrder?: string[]) => {
   fireEvent.click(screen.getByText('Next step'))
 }
 
-const performNightAction = (targetName: string) => {
+const clickOnButton = (targetName: string) => {
   fireEvent.click(
     screen.getByText(targetName, { selector: 'button', exact: false })
   )
@@ -42,13 +42,13 @@ test('Mafia kills a player', async () => {
   ])
 
   // Mafia choose a target to kill
-  performNightAction('Player 2') // Mafioso kills Player 2
+  clickOnButton('Player 2') // Mafioso kills Player 2
 
   // Doctor choose a target to heal
-  performNightAction('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 3') // Doctor heals Player 3
 
   // Sheriff choose a target to investigate
-  performNightAction('Player 4') // Sheriff investigates Player 5
+  clickOnButton('Player 4') // Sheriff investigates Player 5
 
   expect(
     screen.getByText(`Player 2 (Townie) was killed by Player 1 (Mafioso)`, {
@@ -71,9 +71,9 @@ test('Doctor heals a player', async () => {
     'Townie', // Player 5
   ])
 
-  performNightAction('Player 2') // Mafioso kills Player 2
-  performNightAction('Player 2') // Doctor heals Player 2
-  performNightAction('Player 4') // Sheriff investigates Player 5
+  clickOnButton('Player 2') // Mafioso kills Player 2
+  clickOnButton('Player 2') // Doctor heals Player 2
+  clickOnButton('Player 4') // Sheriff investigates Player 5
 
   expect(
     screen.getByText(`but healed`, {
@@ -91,9 +91,9 @@ test('Sheriff investigates', async () => {
     'Townie', // Player 5
   ])
 
-  performNightAction('Player 2') // Mafioso kills Player 2
-  performNightAction('Player 3') // Doctor heals Player 3
-  performNightAction('Player 4') // Sheriff investigates Player 5
+  clickOnButton('Player 2') // Mafioso kills Player 2
+  clickOnButton('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 4') // Sheriff investigates Player 5
 
   expect(
     screen.getByText(`investigated`, {
@@ -112,7 +112,7 @@ test("Mafia can't select other mafia", async () => {
   ])
 
   // Mafia choose a target to kill
-  performNightAction('Player 2') // Mafioso tries to target Player 2
+  clickOnButton('Player 2') // Mafioso tries to target Player 2
 
   expect(
     screen.getByText(
@@ -130,15 +130,15 @@ test('Mafia kills a player on first turn, but is healed on the second', async ()
     'Townie', // Player 5
   ])
 
-  performNightAction('Player 2') // Mafioso kills Player 2
-  performNightAction('Player 3') // Doctor heals Player 3
-  performNightAction('Player 4') // Sheriff investigates Player 5
+  clickOnButton('Player 2') // Mafioso kills Player 2
+  clickOnButton('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 4') // Sheriff investigates Player 5
   fireEvent.click(screen.getByText('Next step'))
   fireEvent.click(screen.getByText('Skip Hanging'))
   fireEvent.click(screen.getByText('Next step'))
-  performNightAction('Player 3') // Mafioso kills Player 3
-  performNightAction('Player 3') // Doctor heals Player 3
-  performNightAction('Player 1') // Sheriff investigates Player 5
+  clickOnButton('Player 3') // Mafioso kills Player 3
+  clickOnButton('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 1') // Sheriff investigates Player 5
 
   expect(
     screen.getByText(`Player 2 (Townie) was killed by Player 1 (Mafioso)`, {
@@ -156,9 +156,9 @@ test('Game history is updated with kill announcement', async () => {
     'Townie', // Player 5
   ])
 
-  performNightAction('Player 2') // Mafioso kills Player 2
-  performNightAction('Player 3') // Doctor heals Player 3
-  performNightAction('Player 4') // Sheriff investigates Player 5
+  clickOnButton('Player 2') // Mafioso kills Player 2
+  clickOnButton('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 4') // Sheriff investigates Player 5
 
   expect(
     screen.getByText(`📢 Player 2 was killed and they were a Townie!`, {
@@ -176,12 +176,75 @@ test('Game history is updated with nothing happens announcement', async () => {
     'Townie', // Player 5
   ])
 
-  performNightAction('Player 3') // Mafioso kills Player 3
-  performNightAction('Player 3') // Doctor heals Player 3
-  performNightAction('Player 4') // Sheriff investigates Player 5
+  clickOnButton('Player 3') // Mafioso kills Player 3
+  clickOnButton('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 4') // Sheriff investigates Player 5
 
   expect(
     screen.getByText(`📢 Nothing happened during the night.`, {
+      exact: false,
+    })
+  ).toBeInTheDocument()
+})
+
+test('A game ends with Mafia winning', async () => {
+  await setupGame([
+    'Mafioso', // Player 1
+    'Townie', // Player 2
+    'Sheriff', // Player 3
+    'Doctor', // Player 4
+    'Townie', // Player 5
+  ])
+
+  // Night 1
+  clickOnButton('Player 3') // Mafioso kills Player 3
+  clickOnButton("Don't") // Doctor skips heal
+  clickOnButton("Don't") // Sheriff skips investigate
+
+  fireEvent.click(screen.getByText('Next step'))
+  fireEvent.click(screen.getByText('Skip Hanging'))
+  fireEvent.click(screen.getByText('Next step'))
+
+  // Night 2
+  clickOnButton('Player 2') // Mafioso kills Player 2
+  clickOnButton("Don't") // Doctor skips heal
+
+  fireEvent.click(screen.getByText('Next step'))
+  fireEvent.click(screen.getByText('Skip Hanging'))
+  fireEvent.click(screen.getByText('Next step'))
+
+  // Night 3
+  clickOnButton('Player 4') // Mafioso kills Player 4
+  clickOnButton("Don't") // Doctor skips heal
+
+  fireEvent.click(screen.getByText('Next step'))
+  expect(
+    screen.getByText(`Game over! Mafia won!`, {
+      exact: false,
+    })
+  ).toBeInTheDocument()
+})
+
+test('A game ends with Town winning', async () => {
+  await setupGame([
+    'Mafioso', // Player 1
+    'Townie', // Player 2
+    'Sheriff', // Player 3
+    'Doctor', // Player 4
+    'Townie', // Player 5
+  ])
+
+  // Night 1
+  clickOnButton("Don't") // Mafioso skips kill
+  clickOnButton("Don't") // Doctor skips heal
+  clickOnButton("Don't") // Sheriff skips investigate
+
+  fireEvent.click(screen.getByText('Next step'))
+  clickOnButton('Player 1') // Town votes to hang Player 1
+  clickOnButton('Hang selected player') // Town hangs Player 1
+  fireEvent.click(screen.getByText('Next step'))
+  expect(
+    screen.getByText(`Game over! Town won!`, {
       exact: false,
     })
   ).toBeInTheDocument()

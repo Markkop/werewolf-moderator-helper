@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { existingRoles } from '../data/existingRoles'
 import { Player, Role } from '../interfaces'
 import { executeActions } from '../utils/executeActions'
+import { isGameOver } from '../utils/game'
 
 interface GameContextState {
   players: Player[]
@@ -26,6 +27,7 @@ interface GameContextState {
   night: number
   goToNextNight: () => void
   goToGameState: (state: string) => void
+  checkGameOver: (players: Player[]) => void
 }
 
 const GameContext = createContext<GameContextState | undefined>(undefined)
@@ -75,9 +77,27 @@ export const GameProvider: React.FC<Props> = ({
 
   useEffect(() => {
     if (gameState === 'moderatorAnnouncement') {
-      executeActions(players, addItemToHistory, addItemToAnnouncement)
+      const playersAfterNight = executeActions(
+        players,
+        addItemToHistory,
+        addItemToAnnouncement
+      )
+      setPlayers(playersAfterNight)
+      checkGameOver(playersAfterNight)
+    }
+
+    if (gameState === 'sleep') {
+      checkGameOver(players)
     }
   }, [gameState])
+
+  const checkGameOver = (playersParam: Player[]) => {
+    const winnerFaction = isGameOver(playersParam || players)
+    if (winnerFaction) {
+      setGameState('gameOver')
+      addItemToHistory(`🏁 Game over! ${winnerFaction} won!`)
+    }
+  }
 
   const goToGameState = (state: string) => {
     setGameState(state)
@@ -147,6 +167,14 @@ export const GameProvider: React.FC<Props> = ({
     setAnnouncement([])
   }
 
+  const killPlayer = (playerId: number) => {
+    setPlayers(
+      players.map((player) =>
+        player.id === playerId ? { ...player, isDead: true } : player
+      )
+    )
+  }
+
   return (
     <GameContext.Provider
       value={{
@@ -171,6 +199,7 @@ export const GameProvider: React.FC<Props> = ({
         night,
         goToNextNight,
         goToGameState,
+        checkGameOver,
       }}
     >
       {children}

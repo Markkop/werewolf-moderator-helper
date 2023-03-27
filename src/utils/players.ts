@@ -1,12 +1,38 @@
 import { roleOrder } from '../data/existingRoles'
 import { Action, ActionInitiator, Faction, Player } from '../interfaces'
 
-export function filterAlivePlayers(players: Player[]) {
+
+export function getAlivePlayers(players: Player[]) {
   return players.filter((player) => !player.isDead)
 }
 
-export function filterPlayersWithNightAction(players: Player[]) {
+export function getPlayersWithNightAction(players: Player[]) {
   return players.filter((player) => player.role.hasNightAction)
+}
+
+export function getPlayersByRole(players: Player[], role: string) {
+  return players.filter((player) => player.role.name === role)
+}
+
+export function getPlayersByFaction(players: Player[], faction: Faction) {
+  return players.filter((player) => player.role.faction === faction)
+}
+
+export function getPlayersByAlignment(players: Player[], alignment: string) {
+  return players.filter((player) => player.role.alignment === alignment)
+}
+
+export function getPlayersByActionType(
+  players: Player[],
+  actionInitiator: ActionInitiator[],
+  actionType: string
+) {
+  const initiators = actionInitiator.filter(
+    (action) => action.action === actionType
+  )
+  return players.filter((player) =>
+    initiators.some((initiator) => initiator.initiatorId === player.id)
+  )
 }
 
 export function selectAndFilterMafiosos(players: Player[]) {
@@ -35,31 +61,6 @@ export function orderPlayersByRole(players: Player[]) {
     }
     return 0
   })
-}
-
-export function getPlayersByRole(players: Player[], role: string) {
-  return players.filter((player) => player.role.name === role)
-}
-
-export function getPlayersByFaction(players: Player[], faction: Faction) {
-  return players.filter((player) => player.role.faction === faction)
-}
-
-export function getPlayersByAlignment(players: Player[], alignment: string) {
-  return players.filter((player) => player.role.alignment === alignment)
-}
-
-export function getPlayersByActionType(
-  players: Player[],
-  actionInitiator: ActionInitiator[],
-  actionType: string
-) {
-  const initiators = actionInitiator.filter(
-    (action) => action.action === actionType
-  )
-  return players.filter((player) =>
-    initiators.some((initiator) => initiator.initiatorId === player.id)
-  )
 }
 
 export function updatePlayersFromAction(

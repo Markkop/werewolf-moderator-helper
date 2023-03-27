@@ -1,6 +1,6 @@
 import { Player, ActionTarget } from '../../interfaces'
 import {
-  filterAlivePlayers,
+  getAlivePlayers,
   getPlayersByFaction,
   updatePlayersFromAction,
 } from '../players'
@@ -11,7 +11,7 @@ export function handleMafiosoAction(
   currentPlayer: Player,
   updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void
 ) {
-  const alivePlayers = filterAlivePlayers(players)
+  const alivePlayers = getAlivePlayers(players)
   const mafiaMembers = getPlayersByFaction(alivePlayers, 'Mafia')
 
   if (mafiaMembers.find((mafiaMember) => mafiaMember.id === targetId)) {

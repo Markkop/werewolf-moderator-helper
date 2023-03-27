@@ -4,6 +4,7 @@ import NightActions from '../components/NightActions'
 import SetupPlayers from '../components/SetupPlayers'
 import SetupRoles from '../components/SetupRoles'
 import Sleep from '../components/Sleep'
+import GameOver from '../components/GameOver'
 import { useGameContext } from '../contexts/GameContext'
 
 const Game: React.FC = () => {
@@ -16,6 +17,7 @@ const Game: React.FC = () => {
     moderatorAnnouncement: <ModeratorAnnouncement />,
     trial: <Trial />,
     sleep: <Sleep />,
+    gameOver: <GameOver />,
   }
 
   const renderGameState = () => {

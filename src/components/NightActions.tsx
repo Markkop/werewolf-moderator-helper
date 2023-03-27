@@ -5,8 +5,8 @@ import { handleDoctorAction } from '../utils/actionHandlers/doctor'
 import { handleMafiosoAction } from '../utils/actionHandlers/mafioso'
 import { handleSheriffAction } from '../utils/actionHandlers/sheriff'
 import {
-  filterAlivePlayers,
-  filterPlayersWithNightAction,
+  getAlivePlayers,
+  getPlayersWithNightAction,
   orderPlayersByRole,
   selectAndFilterMafiosos,
 } from '../utils/players'
@@ -22,8 +22,8 @@ export default function NightActions() {
   } = useGameContext()
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
 
-  const alivePlayers = filterAlivePlayers(players)
-  const playersWithNightActions = filterPlayersWithNightAction(alivePlayers)
+  const alivePlayers = getAlivePlayers(players)
+  const playersWithNightActions = getPlayersWithNightAction(alivePlayers)
   const actingPlayers = selectAndFilterMafiosos(playersWithNightActions)
   const orderedPlayers = orderPlayersByRole(actingPlayers)
 

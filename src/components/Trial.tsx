@@ -17,10 +17,11 @@ export default function HangingStep() {
   }
 
   const handleHangPlayer = () => {
-    if (selectedPlayerId) {
+    if (selectedPlayerId !== null) {
       const playerToHang = players.find(
         (player) => player.id === selectedPlayerId
       )
+
       if (playerToHang) {
         const playerTag = getPlayerTag(playerToHang)
         playerToHang.isDead = true
@@ -54,9 +55,8 @@ export default function HangingStep() {
         {alivePlayers.map((player) => (
           <li key={player.id}>
             {selectedPlayerId === player.id && '👉 '}
-            {player.name} {` (${player.role.name})`}
             <button onClick={() => handleSelectPlayer(player.id)}>
-              Select
+              {player.name} {` (${player.role.name})`}
             </button>
             {selectedPlayerId === player.id &&
               Boolean(defenseSeconds) &&
@@ -64,7 +64,7 @@ export default function HangingStep() {
           </li>
         ))}
       </ul>
-      <button onClick={handleHangPlayer} disabled={!selectedPlayerId}>
+      <button onClick={handleHangPlayer} disabled={selectedPlayerId === null}>
         Hang selected player
       </button>
       <button
