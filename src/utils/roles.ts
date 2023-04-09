@@ -1,5 +1,5 @@
 import { Player, Role } from '../interfaces'
-import { existingRoles } from '../data/roles'
+import { allRoles } from '../data/roles'
 
 export function shufflePlayers(array: Role[], customRolesOrder: string[] = []) {
   let currentIndex = array.length
@@ -41,5 +41,5 @@ export function assignRolesToPlayers(
 }
 
 export function getRoleByName(roleName: string) {
-  return existingRoles.find((role) => role.name === roleName)
+  return allRoles.find((role) => role.name === roleName)
 }

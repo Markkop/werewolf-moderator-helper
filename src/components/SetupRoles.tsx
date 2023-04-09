@@ -1,6 +1,6 @@
 import React from 'react'
 import { useGameContext } from '../contexts/GameContext'
-import { existingRoles } from '../data/roles'
+import { allRoles } from '../data/roles'
 import { Role } from '../interfaces'
 import { assignRolesToPlayers } from '../utils/roles'
 
@@ -37,7 +37,7 @@ export default function SetupRoles() {
 
   const hasEnoughRoles = roles.length === players.length
 
-  const uniqueRoles = existingRoles.filter((role) => role.isUnique)
+  const uniqueRoles = allRoles.filter((role) => role.isUnique)
   return (
     <div>
       <h2>Setup Roles</h2>
@@ -52,7 +52,7 @@ export default function SetupRoles() {
       <div>
         <h3>Add roles</h3>
         <ul>
-          {existingRoles.map((role) => (
+          {allRoles.map((role) => (
             <li key={role.name}>
               {role.name}{' '}
               <button

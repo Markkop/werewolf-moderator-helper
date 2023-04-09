@@ -4,7 +4,7 @@ import { handleMafiosoAction } from '../utils/actionHandlers/mafioso'
 
 export const roleOrder: string[] = ['Mafioso', 'Godfather', 'Vigilante', 'Doctor', 'Sheriff']
 
-export const existingRoles: Role[] = [
+export const allRoles: Role[] = [
   {
     name: 'Townie',
     description: 'Find and kill the evildoers in the town.',
