@@ -50,6 +50,7 @@ export default function NightActions() {
       ) => void
     > = {
       Mafioso: handleMafiosoAction,
+      Godfather: handleMafiosoAction,
       Doctor: handleDoctorAction,
       Sheriff: handleSheriffAction,
     }

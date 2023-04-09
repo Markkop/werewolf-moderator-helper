@@ -1,6 +1,6 @@
 import { Role } from '../interfaces'
 
-export const roleOrder: string[] = ['Mafioso', 'Doctor', 'Sheriff']
+export const roleOrder: string[] = ['Mafioso', 'Godfather', 'Doctor', 'Sheriff']
 
 export const existingRoles: Role[] = [
   {
@@ -34,6 +34,15 @@ export const existingRoles: Role[] = [
       'Each night wake with the Mafia. You vote for a player to kill.',
     alignment: 'Evil',
     virtueValue: '-6',
+    faction: 'Mafia',
+    hasNightAction: true,
+  },
+  {
+    name: 'Godfather',
+    description:
+      'Each night wake with the Mafia. You vote for a player to kill.',
+    alignment: 'Evil',
+    virtueValue: '-8',
     faction: 'Mafia',
     hasNightAction: true,
   },

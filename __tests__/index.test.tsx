@@ -313,3 +313,23 @@ test('A jester hangs a player', async () => {
     })[0]
   ).toBeInTheDocument()
 })
+
+test('A Godfather without other mafia kills a player', async () => {
+  await setupGame([
+    'Godfather', // Player 1
+    'Townie', // Player 2
+    'Sheriff', // Player 3
+    'Doctor', // Player 4
+    'Townie', // Player 5
+  ])
+
+  clickOnButton('Player 2') // Godfather kills Player 2
+  clickOnButton('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 4') // Sheriff investigates Player 5
+
+  expect(
+    screen.getByText(`Player 2 (Townie) was killed by Player 1 (Godfather)`, {
+      exact: false,
+    })
+  ).toBeInTheDocument()
+})

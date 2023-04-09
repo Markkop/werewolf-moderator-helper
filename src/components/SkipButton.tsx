@@ -7,6 +7,10 @@ export default function SkipButton({ onClick, role = 'default' }) {
       button: "⏭️ Don't kill anyone",
       history: "⏭️ The Mafioso didn't kill anyone",
     },
+    Godfather: {
+      button: "⏭️ Don't kill anyone",
+      history: "⏭️ The Godfather didn't kill anyone",
+    },
     Doctor: {
       button: "⏭️ Don't heal anyone",
       history: "⏭️ The  Doctor didn't heal anyone",
