@@ -32,6 +32,27 @@ test('Setups a default game', async () => {
   ).toBeInTheDocument()
 })
 
+test("Can't setup a game with mismatching players and roles number", async () => {
+  render(
+    <GameProvider customRolesOrder={[]}>
+      <IndexPage />
+    </GameProvider>
+  )
+
+  fireEvent.change(screen.getByRole('textbox'), {
+    target: { value: 'Player 6' },
+  })
+
+  fireEvent.click(screen.getByText('Add player'))
+  fireEvent.click(screen.getByText('Next step'))
+
+  expect(
+    screen.getByText(`You need`, {
+      exact: false,
+    })
+  ).toBeInTheDocument()
+})
+
 test('Mafia kills a player', async () => {
   await setupGame([
     'Mafioso', // Player 1

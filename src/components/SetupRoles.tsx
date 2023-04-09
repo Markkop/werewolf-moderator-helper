@@ -13,14 +13,14 @@ export default function SetupRoles() {
     customRolesOrder,
     addItemToHistory,
     addRole,
-    removeRole,
+    removeRoleByIndex,
   } = useGameContext()
   const handleAddRole = (role: Role) => {
     addRole(role)
   }
 
-  const handleRemoveRole = (role: Role) => {
-    removeRole(role)
+  const handleRemoveRole = (index: number) => {
+    removeRoleByIndex(index)
   }
 
   const handleNextStep = () => {
@@ -35,6 +35,8 @@ export default function SetupRoles() {
     goToGameState('sleep')
   }
 
+  const hasEnoughRoles = roles.length === players.length
+
   return (
     <div>
       <h2>Setup Roles</h2>
@@ -42,7 +44,7 @@ export default function SetupRoles() {
         {roles.map((role, index) => (
           <li key={index}>
             {role.name}{' '}
-            <button onClick={() => handleRemoveRole(role)}>Remove</button>
+            <button onClick={() => handleRemoveRole(index)}>Remove</button>
           </li>
         ))}
       </ul>
@@ -57,7 +59,9 @@ export default function SetupRoles() {
           ))}
         </ul>
       </div>
-      <button onClick={handleNextStep}>Next step</button>
+      <button onClick={handleNextStep} disabled={!hasEnoughRoles}>
+        {hasEnoughRoles ? 'Next step' : `You need ${players.length} roles`}
+      </button>
     </div>
   )
 }

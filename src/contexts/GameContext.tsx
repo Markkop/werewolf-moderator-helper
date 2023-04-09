@@ -1,9 +1,9 @@
-// src/GameContext.ts
 import { createContext, useContext, useEffect, useState } from 'react'
 import { existingRoles } from '../data/roles'
 import { Player, Role } from '../interfaces'
 import { executeActions } from '../utils/executeActions'
 import { isGameOver } from '../utils/game'
+import { getRoleByName } from '../utils/roles'
 
 interface GameContextState {
   players: Player[]
@@ -14,7 +14,7 @@ interface GameContextState {
   removeActionAndStatus: () => void
   roles: Role[]
   addRole: (role: Role) => void
-  removeRole: (role: Role) => void
+  removeRoleByIndex: (index: number) => void
   updateRole: (role: Role) => void
   gameState: string
   setGameState: (state: string) => void
@@ -63,13 +63,17 @@ export const GameProvider: React.FC<Props> = ({
   const [players, setPlayers] = useState<Player[]>(defaultPlayers)
   const defaultRoles = customRolesOrder?.length
     ? customRolesOrder.map((roleName) => {
-        const role = existingRoles.find((role) => role.name === roleName)
-        if (!role) {
-          throw new Error(`Role ${roleName} not found`)
-        }
+        const role = getRoleByName(roleName)
+        if (!role) throw new Error(`Role ${roleName} not found`)
         return role
       })
-    : [existingRoles[0], ...existingRoles]
+    : [
+        getRoleByName('Townie'),
+        getRoleByName('Townie'),
+        getRoleByName('Mafioso'),
+        getRoleByName('Doctor'),
+        getRoleByName('Sheriff'),
+      ]
 
   const [roles, setRoles] = useState<Role[]>(defaultRoles)
   const [gameState, setGameState] = useState('idle')
@@ -142,8 +146,8 @@ export const GameProvider: React.FC<Props> = ({
     setRoles([...roles, role])
   }
 
-  const removeRole = (roleToRemove: Role) => {
-    setRoles(roles.filter((role) => role.name !== roleToRemove.name))
+  const removeRoleByIndex = (index: number) => {
+    setRoles(roles.filter((_, i) => i !== index))
   }
 
   const updateRole = (updatedRole: Role) => {
@@ -192,7 +196,7 @@ export const GameProvider: React.FC<Props> = ({
         removeActionAndStatus,
         roles,
         addRole,
-        removeRole,
+        removeRoleByIndex,
         updateRole,
         gameState,
         setGameState,
