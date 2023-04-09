@@ -78,4 +78,14 @@ export const existingRoles: Role[] = [
       handler: handleAction
     }
   },
+  {
+    name: 'Survivor',
+    description: 'Find and kill the evildoers in the town. You cannot be killed at night.',
+    alignment: 'Good',
+    virtueValue: '4',
+    faction: 'Town',
+    night: {
+      immune: true
+    }
+  }
 ]

@@ -354,3 +354,23 @@ test('A Vigilante kills a player', async () => {
     })
   ).toBeInTheDocument()
 })
+
+test('A Survivor is not killed', async () => {
+  await setupGame([
+    'Mafioso', // Player 1
+    'Townie', // Player 2
+    'Sheriff', // Player 3
+    'Doctor', // Player 4
+    'Survivor', // Player 5
+  ])
+
+  clickOnButton('Player 5') // Mafioso tries to kill Player 5
+  clickOnButton('Player 2') // Doctor heals Player 2
+  clickOnButton('Player 4') // Sheriff investigates Player 5
+
+  expect(
+    screen.getByText(`but was immune`, {
+      exact: false,
+    })
+  ).toBeInTheDocument()
+})

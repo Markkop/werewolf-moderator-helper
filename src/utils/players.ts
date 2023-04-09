@@ -7,7 +7,7 @@ export function getAlivePlayers(players: Player[]) {
 }
 
 export function getPlayersWithNightAction(players: Player[]) {
-  return players.filter((player) => player.role.night)
+  return players.filter((player) => player.role.night?.action)
 }
 
 export function getPlayersByRole(players: Player[], role: string) {

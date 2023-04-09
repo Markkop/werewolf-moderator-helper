@@ -30,6 +30,14 @@ export function executeActions(
         });
         return;
       }
+
+      if (player.role.night?.immune) {
+        historyItems.push(
+          `🛡️ ${playerTag} was attacked by ${killerTag}, but was immune!`
+        );
+        return;
+      }
+
       isDead = true;
       historyItems.push(`🔪 ${playerTag} was killed by ${killerTag}  `);
       announcementItems.push(

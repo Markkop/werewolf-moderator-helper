@@ -29,8 +29,9 @@ export interface Role {
   virtueValue: string
   faction: Faction
   night?: {
-    action: Action
-    handler: (
+    immune?: boolean
+    action?: Action
+    handler?: (
       players: Player[],
       targetId: number,
       currentPlayer: Player,
