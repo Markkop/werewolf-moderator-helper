@@ -37,6 +37,7 @@ export default function SetupRoles() {
 
   const hasEnoughRoles = roles.length === players.length
 
+  const uniqueRoles = existingRoles.filter((role) => role.isUnique)
   return (
     <div>
       <h2>Setup Roles</h2>
@@ -54,7 +55,12 @@ export default function SetupRoles() {
           {existingRoles.map((role) => (
             <li key={role.name}>
               {role.name}{' '}
-              <button onClick={() => handleAddRole(role)}>Add</button>
+              <button
+                onClick={() => handleAddRole(role)}
+                disabled={uniqueRoles.includes(role) && roles.includes(role)}
+              >
+                Add
+              </button>
             </li>
           ))}
         </ul>

@@ -28,6 +28,7 @@ export interface Role {
   alignment: string
   virtueValue: string
   faction: Faction
+  isUnique?: boolean
   night?: {
     immune?: boolean
     action?: Action

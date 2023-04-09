@@ -54,6 +54,7 @@ export const existingRoles: Role[] = [
     alignment: 'Evil',
     virtueValue: '-8',
     faction: 'Mafia',
+    isUnique: true,
     night: {
       action: 'kill',
       handler: handleMafiosoAction
