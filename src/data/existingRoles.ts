@@ -7,7 +7,7 @@ export const existingRoles: Role[] = [
     name: 'Townie',
     description: 'Find and kill the evildoers in the town.',
     alignment: 'Good',
-    points: '1',
+    virtueValue: '1',
     faction: 'Town',
     hasNightAction: false,
   },
@@ -15,7 +15,7 @@ export const existingRoles: Role[] = [
     name: 'Sheriff',
     description: 'Each night check if a player is "Good" or "Evil".',
     alignment: 'Good',
-    points: '7',
+    virtueValue: '7',
     faction: 'Town',
     hasNightAction: true,
   },
@@ -24,7 +24,7 @@ export const existingRoles: Role[] = [
     description:
       'Each night choose a player to heal. They cannot be killed that night.',
     alignment: 'Good',
-    points: '4',
+    virtueValue: '4',
     faction: 'Town',
     hasNightAction: true,
   },
@@ -33,8 +33,17 @@ export const existingRoles: Role[] = [
     description:
       'Each night wake with the Mafia. You vote for a player to kill.',
     alignment: 'Evil',
-    points: '-6',
+    virtueValue: '-6',
     faction: 'Mafia',
     hasNightAction: true,
+  },
+  {
+    name: 'Jester',
+    description:
+      'You win if you are hanged. You may immediately kill one of your guilty voters.',
+    alignment: 'Good',
+    virtueValue: '-1',
+    faction: 'Neutral',
+    hasNightAction: false,
   },
 ]

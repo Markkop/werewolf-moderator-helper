@@ -16,7 +16,7 @@ export default function SleepStep() {
 
   useEffect(() => {
     if (seconds === 0) {
-      handleNextStep()
+      // handleNextStep()
     }
   }, [seconds])
 

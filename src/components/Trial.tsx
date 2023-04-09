@@ -10,26 +10,46 @@ export default function HangingStep() {
   const { seconds: discussionSeconds, setSeconds: setDiscussionSeconds } =
     useTimer(300)
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null)
+  const [isJesterHaunting, setIsJesterHaunting] = useState(false)
 
   const handleSelectPlayer = (playerId: number) => {
     setSelectedPlayerId(playerId)
     setDefenseSeconds(30)
   }
 
-  const handleHangPlayer = () => {
-    if (selectedPlayerId !== null) {
-      const playerToHang = players.find(
-        (player) => player.id === selectedPlayerId
-      )
+  const killPlayer = () => {
+    if (selectedPlayerId === null) return
 
-      if (playerToHang) {
-        const playerTag = getPlayerTag(playerToHang)
-        playerToHang.isDead = true
-        addItemToHistory(`📢 ${playerTag} was hanged`)
-        updatePlayer(playerToHang)
-      }
+    const playerToKill = players.find(
+      (player) => player.id === selectedPlayerId
+    )
+
+    if (!playerToKill) return
+
+    const playerTag = getPlayerTag(playerToKill)
+    playerToKill.isDead = true
+    addItemToHistory(
+      `📢 ${playerTag} was ${isJesterHaunting ? 'haunted' : 'hanged'}.`
+    )
+    updatePlayer(playerToKill)
+    return playerToKill
+  }
+
+  const hangPlayer = () => {
+    const playerKilled = killPlayer()
+
+    if (playerKilled.role.name === 'Jester') {
+      setIsJesterHaunting(true)
+      setSelectedPlayerId(null)
+      return
     }
 
+    setSelectedPlayerId(null)
+    goToGameState('sleep')
+  }
+
+  const hauntPlayer = () => {
+    killPlayer()
     setSelectedPlayerId(null)
     goToGameState('sleep')
   }
@@ -58,14 +78,18 @@ export default function HangingStep() {
             <button onClick={() => handleSelectPlayer(player.id)}>
               {player.name} {` (${player.role.name})`}
             </button>
-            {selectedPlayerId === player.id &&
+            {!isJesterHaunting &&
+              selectedPlayerId === player.id &&
               Boolean(defenseSeconds) &&
               `Defense time: ⏳ ${defenseSeconds}s`}
           </li>
         ))}
       </ul>
-      <button onClick={handleHangPlayer} disabled={selectedPlayerId === null}>
-        Hang selected player
+      <button
+        onClick={isJesterHaunting ? hauntPlayer : hangPlayer}
+        disabled={selectedPlayerId === null}
+      >
+        {`${isJesterHaunting ? '👻 Haunt' : 'Hang'} selected player`}
       </button>
       <button
         onClick={() => {
@@ -73,7 +97,7 @@ export default function HangingStep() {
           goToGameState('sleep')
         }}
       >
-        Skip Hanging
+        Skip {isJesterHaunting ? 'haunting' : 'hanging'}
       </button>
     </div>
   )

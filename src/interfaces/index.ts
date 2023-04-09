@@ -26,10 +26,10 @@ export interface Role {
   name: string
   description: string
   alignment: string
-  points: string
+  virtueValue: string
   faction: Faction
   hasNightAction: boolean
 }
 
 export type Alignment = 'Good' | 'Evil'
-export type Faction = 'Mafia' | 'Town'
+export type Faction = 'Mafia' | 'Town' | 'Neutral'
