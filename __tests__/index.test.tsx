@@ -273,3 +273,43 @@ test('Two games are played consecutively', async () => {
   ).toBeInTheDocument()
   fireEvent.click(screen.getByText('Start again'))
 })
+
+test('A jester hangs a player', async () => {
+  await setupGame([
+    'Mafioso', // Player 1
+    'Townie', // Player 2
+    'Sheriff', // Player 3
+    'Doctor', // Player 4
+    'Jester', // Player 5
+  ])
+
+  // Night 1
+  clickOnButton("Don't") // Mafioso skips kill
+  clickOnButton("Don't") // Doctor skips heal
+  clickOnButton("Don't") // Sheriff skips investigate
+
+  fireEvent.click(screen.getByText('Next step'))
+  fireEvent.click(
+    screen.getAllByText('Player 5', {
+      exact: false,
+    })[0]
+  )
+  fireEvent.click(screen.getByText('Hang selected player'))
+  fireEvent.click(
+    screen.getAllByText('Player 4', {
+      exact: false,
+    })[0]
+  )
+
+  fireEvent.click(
+    screen.getByText('Haunt selected player', {
+      exact: false,
+    })
+  )
+
+  expect(
+    screen.getAllByText(`Player 4 (Doctor) was haunted`, {
+      exact: false,
+    })[0]
+  ).toBeInTheDocument()
+})
