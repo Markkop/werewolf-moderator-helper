@@ -18,7 +18,7 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     virtueValue: '7',
     faction: 'Town',
-    nightAction: {
+    night: {
       action: 'investigate',
       handler: handleAction,
     }
@@ -30,7 +30,7 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     virtueValue: '4',
     faction: 'Town',
-    nightAction: {
+    night: {
       action: 'heal',
       handler: handleAction
     }
@@ -42,7 +42,7 @@ export const existingRoles: Role[] = [
     alignment: 'Evil',
     virtueValue: '-6',
     faction: 'Mafia',
-    nightAction: {
+    night: {
       action: 'kill',
       handler: handleMafiosoAction
     }
@@ -54,7 +54,7 @@ export const existingRoles: Role[] = [
     alignment: 'Evil',
     virtueValue: '-8',
     faction: 'Mafia',
-    nightAction: {
+    night: {
       action: 'kill',
       handler: handleMafiosoAction
     }
@@ -73,7 +73,7 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     virtueValue: '5',
     faction: 'Town',
-    nightAction: {
+    night: {
       action: 'kill',
       handler: handleAction
     }

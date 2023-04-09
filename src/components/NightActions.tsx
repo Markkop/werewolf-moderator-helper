@@ -37,7 +37,7 @@ export default function NightActions() {
   }
 
   const handleAction = (targetId: number) => {
-    const actionHandler = currentPlayer.role?.nightAction?.handler
+    const actionHandler = currentPlayer.role?.night?.handler
     if (!actionHandler) return
 
     actionHandler(players, targetId, currentPlayer, updatePlayersByMapFn)

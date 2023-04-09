@@ -28,7 +28,7 @@ export interface Role {
   alignment: string
   virtueValue: string
   faction: Faction
-  nightAction?: {
+  night?: {
     action: Action
     handler: (
       players: Player[],

@@ -9,7 +9,7 @@ export default function SkipButton({
   player: Player
 }) {
   const { addItemToHistory } = useGameContext()
-  const verb = player.role.nightAction.action
+  const verb = player.role.night.action
 
   return (
     <div>

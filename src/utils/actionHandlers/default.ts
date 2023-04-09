@@ -14,6 +14,6 @@ export function handleAction(
     currentPlayer,
     updatePlayersByMapFn,
     targetId,
-    currentPlayer.role.nightAction.action
+    currentPlayer.role.night.action
   )
 }
