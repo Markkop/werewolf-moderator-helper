@@ -1,7 +1,9 @@
 import { Player } from '../../interfaces'
-import { updatePlayersFromAction } from '../players'
+import {
+  updatePlayersFromAction,
+} from '../players'
 
-export function handleDoctorAction(
+export function handleAction(
   players: Player[],
   targetId: number,
   currentPlayer: Player,
@@ -12,6 +14,6 @@ export function handleDoctorAction(
     currentPlayer,
     updatePlayersByMapFn,
     targetId,
-    'heal'
+    currentPlayer.role.nightAction.action
   )
 }

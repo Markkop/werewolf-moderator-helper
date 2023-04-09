@@ -333,3 +333,24 @@ test('A Godfather without other mafia kills a player', async () => {
     })
   ).toBeInTheDocument()
 })
+
+test('A Vigilante kills a player', async () => {
+  await setupGame([
+    'Mafioso', // Player 1
+    'Vigilante', // Player 2
+    'Sheriff', // Player 3
+    'Doctor', // Player 4
+    'Townie', // Player 5
+  ])
+
+  clickOnButton('Player 2') // Mafioso kills Player 2
+  clickOnButton('Player 4') // Vigilante kills Player 4
+  clickOnButton('Player 3') // Doctor heals Player 3
+  clickOnButton('Player 4') // Sheriff investigates Player 5
+
+  expect(
+    screen.getByText(`Player 4 (Doctor) was killed by Player 2 (Vigilante)`, {
+      exact: false,
+    })
+  ).toBeInTheDocument()
+})

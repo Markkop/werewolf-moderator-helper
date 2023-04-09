@@ -1,6 +1,8 @@
 import { Role } from '../interfaces'
+import { handleAction } from '../utils/actionHandlers/default'
+import { handleMafiosoAction } from '../utils/actionHandlers/mafioso'
 
-export const roleOrder: string[] = ['Mafioso', 'Godfather', 'Doctor', 'Sheriff']
+export const roleOrder: string[] = ['Mafioso', 'Godfather', 'Vigilante', 'Doctor', 'Sheriff']
 
 export const existingRoles: Role[] = [
   {
@@ -9,7 +11,6 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     virtueValue: '1',
     faction: 'Town',
-    hasNightAction: false,
   },
   {
     name: 'Sheriff',
@@ -17,7 +18,10 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     virtueValue: '7',
     faction: 'Town',
-    hasNightAction: true,
+    nightAction: {
+      action: 'investigate',
+      handler: handleAction,
+    }
   },
   {
     name: 'Doctor',
@@ -26,7 +30,10 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     virtueValue: '4',
     faction: 'Town',
-    hasNightAction: true,
+    nightAction: {
+      action: 'heal',
+      handler: handleAction
+    }
   },
   {
     name: 'Mafioso',
@@ -35,7 +42,10 @@ export const existingRoles: Role[] = [
     alignment: 'Evil',
     virtueValue: '-6',
     faction: 'Mafia',
-    hasNightAction: true,
+    nightAction: {
+      action: 'kill',
+      handler: handleMafiosoAction
+    }
   },
   {
     name: 'Godfather',
@@ -44,7 +54,10 @@ export const existingRoles: Role[] = [
     alignment: 'Evil',
     virtueValue: '-8',
     faction: 'Mafia',
-    hasNightAction: true,
+    nightAction: {
+      action: 'kill',
+      handler: handleMafiosoAction
+    }
   },
   {
     name: 'Jester',
@@ -53,6 +66,16 @@ export const existingRoles: Role[] = [
     alignment: 'Good',
     virtueValue: '-1',
     faction: 'Neutral',
-    hasNightAction: false,
+  },
+  {
+    name: 'Vigilante',
+    description: 'Each night you may choose a player to shoot, killing them. You have one arrow.',
+    alignment: 'Good',
+    virtueValue: '5',
+    faction: 'Town',
+    nightAction: {
+      action: 'kill',
+      handler: handleAction
+    }
   },
 ]

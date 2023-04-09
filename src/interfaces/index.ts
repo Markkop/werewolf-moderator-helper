@@ -28,7 +28,15 @@ export interface Role {
   alignment: string
   virtueValue: string
   faction: Faction
-  hasNightAction: boolean
+  nightAction?: {
+    action: Action
+    handler: (
+      players: Player[],
+      targetId: number,
+      currentPlayer: Player,
+      updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void
+    ) => void
+  }
 }
 
 export type Alignment = 'Good' | 'Evil'

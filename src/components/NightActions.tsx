@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import { useGameContext } from '../contexts/GameContext'
 import { Player } from '../interfaces'
-import { handleDoctorAction } from '../utils/actionHandlers/doctor'
-import { handleMafiosoAction } from '../utils/actionHandlers/mafioso'
-import { handleSheriffAction } from '../utils/actionHandlers/sheriff'
 import {
   getAlivePlayers,
   getPlayersWithNightAction,
@@ -40,22 +37,7 @@ export default function NightActions() {
   }
 
   const handleAction = (targetId: number) => {
-    const mapRoleToActionHandler: Record<
-      string,
-      (
-        players: Player[],
-        targetId: number,
-        currentPlayer: Player,
-        updatePlayersByMapFn: (mapFn: (player: Player) => Player) => void
-      ) => void
-    > = {
-      Mafioso: handleMafiosoAction,
-      Godfather: handleMafiosoAction,
-      Doctor: handleDoctorAction,
-      Sheriff: handleSheriffAction,
-    }
-
-    const actionHandler = mapRoleToActionHandler[currentPlayer.role.name]
+    const actionHandler = currentPlayer.role?.nightAction?.handler
     if (!actionHandler) return
 
     actionHandler(players, targetId, currentPlayer, updatePlayersByMapFn)
@@ -104,7 +86,7 @@ export default function NightActions() {
           </li>
         ))}
       </ul>
-      <SkipButton onClick={handleNextPlayer} role={currentPlayer.role.name} />
+      <SkipButton onClick={handleNextPlayer} player={currentPlayer} />
     </div>
   )
 }

@@ -1,39 +1,25 @@
 import { useGameContext } from '../contexts/GameContext'
+import { Player } from '../interfaces'
 
-export default function SkipButton({ onClick, role = 'default' }) {
+export default function SkipButton({
+  onClick,
+  player,
+}: {
+  onClick: () => void
+  player: Player
+}) {
   const { addItemToHistory } = useGameContext()
-  const skipText = {
-    Mafioso: {
-      button: "⏭️ Don't kill anyone",
-      history: "⏭️ The Mafioso didn't kill anyone",
-    },
-    Godfather: {
-      button: "⏭️ Don't kill anyone",
-      history: "⏭️ The Godfather didn't kill anyone",
-    },
-    Doctor: {
-      button: "⏭️ Don't heal anyone",
-      history: "⏭️ The  Doctor didn't heal anyone",
-    },
-    Sheriff: {
-      button: "⏭️ Don't investigate anyone",
-      history: "⏭️ The Sheriff didn't investigate anyone",
-    },
-    default: {
-      button: '⏭️ Skip',
-      history: '⏭️ Skipped their action',
-    },
-  }
+  const verb = player.role.nightAction.action
 
   return (
     <div>
       <button
         onClick={() => {
-          addItemToHistory(skipText[role].history)
+          addItemToHistory(`⏭️ The ${player.role.name} didn't ${verb} anyone`)
           onClick()
         }}
       >
-        {skipText[role].button}
+        {`⏭️ Don't ${verb} anyone`}
       </button>
     </div>
   )
