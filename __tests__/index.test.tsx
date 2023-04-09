@@ -293,6 +293,11 @@ test('Two games are played consecutively', async () => {
     })[0]
   ).toBeInTheDocument()
   fireEvent.click(screen.getByText('Start again'))
+  expect(
+    screen.getAllByText(`Setup Players`, {
+      exact: false,
+    })[0]
+  ).toBeInTheDocument()
 })
 
 test('A jester hangs a player', async () => {

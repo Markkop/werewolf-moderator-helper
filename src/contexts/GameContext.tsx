@@ -105,7 +105,7 @@ export const GameProvider: React.FC<Props> = ({
     setGameHistory([])
     setNight(0)
     setAnnouncement([])
-    setGameState('setupRoles')
+    setGameState('setupPlayers')
   }
 
   const goToGameState = (state: string) => {
