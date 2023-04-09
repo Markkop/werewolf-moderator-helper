@@ -97,7 +97,7 @@ export default function HangingStep() {
           goToGameState('sleep')
         }}
       >
-        Skip {isJesterHaunting ? 'haunting' : 'hanging'}
+        {`Skip ${isJesterHaunting ? 'Haunting' : 'Hanging'}`}
       </button>
     </div>
   )
