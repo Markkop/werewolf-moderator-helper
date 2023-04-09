@@ -1,6 +1,6 @@
 // src/GameContext.ts
 import { createContext, useContext, useEffect, useState } from 'react'
-import { existingRoles } from '../data/existingRoles'
+import { existingRoles } from '../data/roles'
 import { Player, Role } from '../interfaces'
 import { executeActions } from '../utils/executeActions'
 import { isGameOver } from '../utils/game'

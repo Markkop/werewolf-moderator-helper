@@ -1,6 +1,6 @@
 import React from 'react'
 import { useGameContext } from '../contexts/GameContext'
-import { existingRoles } from '../data/existingRoles'
+import { existingRoles } from '../data/roles'
 import { Role } from '../interfaces'
 import { assignRolesToPlayers } from '../utils/roles'
 

@@ -1,4 +1,4 @@
-import { roleOrder } from '../data/existingRoles'
+import { roleOrder } from '../data/roles'
 import { Action, ActionInitiator, Faction, Player } from '../interfaces'
 
 
